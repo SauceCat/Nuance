@@ -13,6 +13,23 @@ import jinja2
 
 
 def _get_tree_info(X, tree_model, target_names, target_colors, tree_title, color_map):
+	'''
+	get useful information of the tree
+
+	:param X: pandas DataFrame
+		dataset model was fitted on
+	:param tree_model: a fitted sklearn Decision Tree Classifier
+	:param target_names: list
+		list of names for targets
+	:param target_colors: list, default=None
+		list of colors for targets
+	:param tree_title: string
+		name of the tree
+	:param color_map: string, default=None
+		matplotlib color map name, like 'Vega20'
+	:return:
+		dictionary of useful information
+	'''
 	# classify features into 3 types: binary, float and int
 	binary_features = []
 	for col in X.columns.values:
@@ -54,6 +71,20 @@ def _get_tree_info(X, tree_model, target_names, target_colors, tree_title, color
 
 
 def _parse_tree(node_id, parent, pos, tree_info):
+	'''
+	parse the tree structure
+
+	:param node_id: int
+		node id
+	:param parent: int
+	 	parent node id
+	:param pos: string
+		position of the node
+	:param tree_info: dict
+		information of the tree model
+	:return:
+		complete tree structure
+	'''
 	tree_model = tree_info['tree_model']
 	features = tree_info['features']
 	tree_title = tree_info['tree_title']
@@ -104,6 +135,22 @@ def _parse_tree(node_id, parent, pos, tree_info):
 
 
 def _extract_rules(node_id, parent, pos, tree_rules, tree_info):
+	'''
+	extract rules for each tree node
+
+	:param node_id: int
+		tree node id
+	:param parent: int
+		parent node id
+	:param pos: string
+		position of the node
+	:param tree_rules: dict
+		key: node_id, value: rule
+	:param tree_info: dict
+		information of the tree model
+	:return:
+		complete tree_rules
+	'''
 	features = tree_info['features']
 	tree_model = tree_info['tree_model']
 
@@ -136,6 +183,16 @@ def _extract_rules(node_id, parent, pos, tree_rules, tree_info):
 
 
 def _clean_rules(tree_rules, tree_info):
+	'''
+	clean up the rules for each branch
+
+	:param tree_rules: dict
+		key: node_id, value: rule
+	:param tree_info: dict
+		information of the tree model
+	:return:
+		cleaned rules with the sample structure as tree_rules
+	'''
 	tree_rules_clean = {}
 	for key in tree_rules.keys():
 		key = int(key)
@@ -171,6 +228,25 @@ def _clean_rules(tree_rules, tree_info):
 
 def generate_simple_tree(tree_title, tree_model, X, target_names,
 						 target_colors=None, color_map=None, width=None, height=None):
+	'''
+	visualize a sklearn Decision Tree Classifier
+
+	:param tree_title: string
+		name of the tree
+	:param tree_model: a fitted sklearn Decision Tree Classifier
+	:param X: pandas DataFrame
+		dataset model was fitted on
+	:param target_names: list
+		list of names for targets
+	:param target_colors: list, default=None
+		list of colors for targets
+	:param color_map: string, default=None
+		matplotlib color map name, like 'Vega20'
+	:param width: int
+		width of the html page
+	:param height: int
+		height of the html page
+	'''
 
 	# get tree information
 	tree_info = _get_tree_info(X, tree_model, target_names, target_colors, tree_title, color_map)
