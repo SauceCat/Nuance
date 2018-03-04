@@ -6,6 +6,7 @@ import matplotlib
 
 import copy
 import sys
+import os
 
 import json
 import jinja2
@@ -188,8 +189,12 @@ def generate_simple_tree(tree_title, tree_model, X, target_names,
 	temp = open('src/simple_tree_template.html').read()
 	template = jinja2.Template(temp)
 
+	# create the output root if it is not exits
+	if not os.path.exists('simple_tree_output'):
+		os.mkdir('simple_tree_output')
+
 	# generate output html
-	with open('simple_tree_%s.html' %(tree_title), 'wb') as fh:
+	with open('simple_tree_output/simple_tree_%s.html' %(tree_title), 'wb') as fh:
 		render_result = {
 			'tree': json.dumps(final_tree), 'rule': json.dumps(tree_rules_clean),
 			'num_node': tree_info['tree_model'].tree_.capacity,
@@ -197,4 +202,4 @@ def generate_simple_tree(tree_title, tree_model, X, target_names,
 			'width': width, 'height': height
 		}
 		fh.write(template.render(render_result))
-	fh.close()
+		print('The output is in simple_tree_output/simple_tree_%s.html. Enjoy!' %(tree_title))
