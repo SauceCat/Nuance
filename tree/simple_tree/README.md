@@ -17,7 +17,7 @@ Take **simple_tree** as an example:
     ```
     pip install jinja2
     ```
-4. Use simple_tree visualization:
+4. Use simple_tree visualization: (simple_tree depends on D3.js, so you need to connect to the network)
     ```python
     import sys
     sys.path.insert(0, 'src/')
