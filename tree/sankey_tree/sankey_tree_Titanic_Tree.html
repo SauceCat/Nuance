@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<style>
+.node {
+	cursor: pointer;
+}
+
+.node text {
+	font: 12px helvetica;
+}
+
+.link {
+	fill: none;
+	opacity: 0.8;
+}
+
+text.hover {
+	fill: #000;
+}
+
+#info {
+	font-family: helvetica;
+	font-size: 15px;
+	margin-top: 20px;
+}
+
+#product {
+	font-size: 25px;
+	color: #ff546b;
+	font-weight: bold;
+}
+
+#container {
+    margin: 5vh 5vw;
+    font-family: helvetica;
+}
+
+#container h1 {
+    font-weight: normal;
+}
+</style>
+</head>
+
+<body>
+<div id='container'>
+<div id='tree'></div>
+</div>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 50, right: 100, bottom: 150, left: 50};
+var tree_depth = 8;
+var width = 1500, height = 1400;
+var tree_gap = (width - margin['left'] - margin['right']) * 1.0 / tree_depth;
+
+var i = 0,
+duration = 750,
+root;
+
+var rules = {"0": [], "1": ["Sex: 0"], "2": ["Sex: 1"], "3": ["Sex: 0", "Pclass <= 2"], "4": ["Sex: 0", "Pclass > 2"], "5": ["Sex: 1", "Age <= 6.5"], "6": ["Sex: 1", "Age > 6.5"], "7": ["Sex: 1", "Age > 6.5", "Pclass <= 1"], "8": ["Sex: 1", "Age > 6.5", "Pclass > 1"], "9": ["Sex: 0", "Pclass > 2", "Fare <= 23.35"], "10": ["Sex: 0", "Pclass > 2", "Fare > 23.35"], "11": ["Sex: 1", "Age <= 6.5", "SibSp <= 2"], "12": ["Sex: 1", "SibSp > 2", "Age <= 6.5"], "13": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Fare <= 23.35"], "14": ["Sex: 0", "Age > 36.5", "Pclass > 2", "Fare <= 23.35"], "15": ["Sex: 1", "Age > 6.5", "Pclass <= 1", "Fare <= 26.144"], "16": ["Sex: 1", "Age > 6.5", "Pclass <= 1", "Fare > 26.144"], "17": ["Sex: 1", "Pclass <= 1", "Fare > 26.144", "6.5 < Age <= 53.0"], "18": ["Sex: 1", "Age > 53.0", "Pclass <= 1", "Fare > 26.144"], "19": ["Sex: 1", "Pclass <= 1", "6.5 < Age <= 53.0", "26.144 < Fare <= 27.135"], "20": ["Sex: 1", "Pclass <= 1", "Fare > 27.135", "6.5 < Age <= 53.0"], "21": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Fare <= 23.35", "Embarked_S: 0"], "22": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Fare <= 23.35", "Embarked_S: 1"], "23": ["Sex: 0", "Pclass > 2", "Age <= 29.75", "Fare <= 23.35", "Embarked_S: 0"], "24": ["Sex: 0", "Pclass > 2", "Fare <= 23.35", "Embarked_S: 0", "29.75 < Age <= 36.5"], "25": ["Sex: 0", "Pclass > 2", "Age <= 29.75", "Embarked_S: 0", "Fare <= 15.373"], "26": ["Sex: 0", "Pclass > 2", "Age <= 29.75", "Embarked_S: 0", "15.373 < Fare <= 23.35"], "27": ["Sex: 0", "Pclass > 2", "Age <= 29.75", "Embarked_S: 0", "Fare <= 13.935"], "28": ["Sex: 0", "Pclass > 2", "Age <= 29.75", "Embarked_S: 0", "13.935 < Fare <= 15.373"], "29": ["Sex: 0", "Pclass > 2", "Fare <= 23.35", "36.5 < Age <= 55.0"], "30": ["Sex: 0", "Age > 55.0", "Pclass > 2", "Fare <= 23.35"], "31": ["Sex: 0", "Parch <= 0", "Pclass > 2", "Fare > 23.35"], "32": ["Sex: 0", "Parch > 0", "Pclass > 2", "Fare > 23.35"], "33": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Embarked_S: 1", "Fare <= 10.825"], "34": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Embarked_S: 1", "10.825 < Fare <= 23.35"], "35": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Embarked_S: 1", "10.825 < Fare <= 17.6"], "36": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Embarked_S: 1", "17.6 < Fare <= 23.35"], "37": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Fare <= 7.762", "Embarked_S: 1"], "38": ["Sex: 0", "Pclass > 2", "Age <= 36.5", "Embarked_S: 1", "7.762 < Fare <= 10.825"]};
+var num_node = 39;
+var tree_depth = 8;
+
+var tree = d3.layout.tree().size([height, width]);
+var diagonal = d3.svg.diagonal()
+        .projection(function(d){
+            return [d.y, d.x];
+        });
+
+var svg = d3.select('body').append('svg')
+        .attr('width', width + margin.right + margin.left)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+var rect_width = 15;
+var y = d3.scale.linear();
+
+var max_samples = 891;
+var min_samples = 1;
+var target_colors = ['#aec7e8', '#ff7f0e'];
+
+var h_node = d3.scale.linear()
+    .domain([parseInt(min_samples), parseInt(max_samples)])
+    .clamp(true)
+    .range([10, 350]);
+
+var w_link = d3.scale.linear()
+    .domain([parseInt(min_samples), parseInt(max_samples)])
+    .clamp(true)
+    .range([10, 200]);
+
+root = {"name": "Titanic_Tree", "parent": "null", "predict": "Not Survived", "self": 0, "value": [549, 342], "sample": 891, "color": "#aec7e8", "children": [{"name": "Sex: 0", "parent": 0, "predict": "Survived", "self": 1, "value": [81, 233], "sample": 314, "color": "#ff7f0e", "children": [{"name": "Pclass <= 2", "parent": 1, "predict": "Survived", "self": 3, "value": [9, 161], "sample": 170, "color": "#ff7f0e", "impurity": 0.1}, {"name": "Pclass > 2", "parent": 1, "predict": "Not Survived", "self": 4, "value": [72, 72], "sample": 144, "color": "#aec7e8", "children": [{"name": "Fare <= 23.35", "parent": 4, "predict": "Survived", "self": 9, "value": [48, 69], "sample": 117, "color": "#ff7f0e", "children": [{"name": "Age <= 36.5", "parent": 9, "predict": "Survived", "self": 13, "value": [42, 68], "sample": 110, "color": "#ff7f0e", "children": [{"name": "Embarked_S: 0", "parent": 13, "predict": "Survived", "self": 21, "value": [15, 38], "sample": 53, "color": "#ff7f0e", "children": [{"name": "Age <= 29.75", "parent": 21, "predict": "Survived", "self": 23, "value": [13, 38], "sample": 51, "color": "#ff7f0e", "children": [{"name": "Fare <= 15.373", "parent": 23, "predict": "Survived", "self": 25, "value": [13, 27], "sample": 40, "color": "#ff7f0e", "children": [{"name": "Fare <= 13.935", "parent": 25, "predict": "Survived", "self": 27, "value": [6, 25], "sample": 31, "color": "#ff7f0e", "impurity": 0.312}, {"name": "Fare > 13.935", "parent": 25, "predict": "Not Survived", "self": 28, "value": [7, 2], "sample": 9, "color": "#aec7e8", "impurity": 0.346}], "impurity": 0.439}, {"name": "Fare > 15.373", "parent": 23, "predict": "Survived", "self": 26, "value": [0, 11], "sample": 11, "color": "#ff7f0e", "impurity": 0.0}], "impurity": 0.38}, {"name": "Age > 29.75", "parent": 21, "predict": "Not Survived", "self": 24, "value": [2, 0], "sample": 2, "color": "#aec7e8", "impurity": 0.0}], "impurity": 0.406}, {"name": "Embarked_S: 1", "parent": 13, "predict": "Survived", "self": 22, "value": [27, 30], "sample": 57, "color": "#ff7f0e", "children": [{"name": "Fare <= 10.825", "parent": 22, "predict": "Not Survived", "self": 33, "value": [19, 14], "sample": 33, "color": "#aec7e8", "children": [{"name": "Fare <= 7.762", "parent": 33, "predict": "Survived", "self": 37, "value": [1, 5], "sample": 6, "color": "#ff7f0e", "impurity": 0.278}, {"name": "Fare > 7.762", "parent": 33, "predict": "Not Survived", "self": 38, "value": [18, 9], "sample": 27, "color": "#aec7e8", "impurity": 0.444}], "impurity": 0.489}, {"name": "Fare > 10.825", "parent": 22, "predict": "Survived", "self": 34, "value": [8, 16], "sample": 24, "color": "#ff7f0e", "children": [{"name": "Fare <= 17.6", "parent": 34, "predict": "Survived", "self": 35, "value": [2, 13], "sample": 15, "color": "#ff7f0e", "impurity": 0.231}, {"name": "Fare > 17.6", "parent": 34, "predict": "Not Survived", "self": 36, "value": [6, 3], "sample": 9, "color": "#aec7e8", "impurity": 0.444}], "impurity": 0.444}], "impurity": 0.499}], "impurity": 0.472}, {"name": "Age > 36.5", "parent": 9, "predict": "Not Survived", "self": 14, "value": [6, 1], "sample": 7, "color": "#aec7e8", "children": [{"name": "Age <= 55.0", "parent": 14, "predict": "Not Survived", "self": 29, "value": [6, 0], "sample": 6, "color": "#aec7e8", "impurity": 0.0}, {"name": "Age > 55.0", "parent": 14, "predict": "Survived", "self": 30, "value": [0, 1], "sample": 1, "color": "#ff7f0e", "impurity": 0.0}], "impurity": 0.245}], "impurity": 0.484}, {"name": "Fare > 23.35", "parent": 4, "predict": "Not Survived", "self": 10, "value": [24, 3], "sample": 27, "color": "#aec7e8", "children": [{"name": "Parch <= 0", "parent": 10, "predict": "Survived", "self": 31, "value": [0, 1], "sample": 1, "color": "#ff7f0e", "impurity": 0.0}, {"name": "Parch > 0", "parent": 10, "predict": "Not Survived", "self": 32, "value": [24, 2], "sample": 26, "color": "#aec7e8", "impurity": 0.142}], "impurity": 0.198}], "impurity": 0.5}], "impurity": 0.383}, {"name": "Sex: 1", "parent": 0, "predict": "Not Survived", "self": 2, "value": [468, 109], "sample": 577, "color": "#aec7e8", "children": [{"name": "Age <= 6.5", "parent": 2, "predict": "Survived", "self": 5, "value": [8, 16], "sample": 24, "color": "#ff7f0e", "children": [{"name": "SibSp <= 2", "parent": 5, "predict": "Survived", "self": 11, "value": [0, 15], "sample": 15, "color": "#ff7f0e", "impurity": 0.0}, {"name": "SibSp > 2", "parent": 5, "predict": "Not Survived", "self": 12, "value": [8, 1], "sample": 9, "color": "#aec7e8", "impurity": 0.198}], "impurity": 0.444}, {"name": "Age > 6.5", "parent": 2, "predict": "Not Survived", "self": 6, "value": [460, 93], "sample": 553, "color": "#aec7e8", "children": [{"name": "Pclass <= 1", "parent": 6, "predict": "Not Survived", "self": 7, "value": [77, 43], "sample": 120, "color": "#aec7e8", "children": [{"name": "Fare <= 26.144", "parent": 7, "predict": "Not Survived", "self": 15, "value": [10, 0], "sample": 10, "color": "#aec7e8", "impurity": 0.0}, {"name": "Fare > 26.144", "parent": 7, "predict": "Not Survived", "self": 16, "value": [67, 43], "sample": 110, "color": "#aec7e8", "children": [{"name": "Age <= 53.0", "parent": 16, "predict": "Not Survived", "self": 17, "value": [49, 40], "sample": 89, "color": "#aec7e8", "children": [{"name": "Fare <= 27.135", "parent": 17, "predict": "Survived", "self": 19, "value": [2, 11], "sample": 13, "color": "#ff7f0e", "impurity": 0.26}, {"name": "Fare > 27.135", "parent": 17, "predict": "Not Survived", "self": 20, "value": [47, 29], "sample": 76, "color": "#aec7e8", "impurity": 0.472}], "impurity": 0.495}, {"name": "Age > 53.0", "parent": 16, "predict": "Not Survived", "self": 18, "value": [18, 3], "sample": 21, "color": "#aec7e8", "impurity": 0.245}], "impurity": 0.476}], "impurity": 0.46}, {"name": "Pclass > 1", "parent": 6, "predict": "Not Survived", "self": 8, "value": [383, 50], "sample": 433, "color": "#aec7e8", "impurity": 0.204}], "impurity": 0.28}], "impurity": 0.306}], "impurity": 0.473};
+var link_color_scale = d3.scale.linear()
+    .domain([0.6, 0.])
+    .clamp(true);
+
+root.x0 = height / 2;
+root.y0 = 0;
+update(root);
+
+
+function update(source) {
+
+    // compute the tree layout
+    var nodes = tree.nodes(root).reverse(),
+    links = tree.links(nodes);
+
+    // normalize for fixed-depth
+    nodes.forEach(function(d) {
+    	d.y = d.depth * tree_gap;
+    });
+
+    // draw the nodes
+    var node = svg.selectAll('g.node')
+    		.data(nodes, function(d) {
+    			return d.id || (d.id = ++i);
+    		});
+
+    // enter any new nodes at the parent's previous position
+    var nodeEnter = node.enter().append('g')
+    		.attr('class', 'node')
+    		.on('click', click)
+    		.attr('transform', function(d) {
+    			return 'translate(' + source.y0 + ',' + source.x0 + ')';
+    		})
+    		.on('mouseover', mouseover)
+    		.on('mouseout', mouseout);
+
+    nodeEnter.append("g").selectAll("rect")
+        .data(function(d) { 
+            var y0 = 0;
+            var node_samples = d.sample;
+            y.rangeRound([h_node(node_samples), 0]).domain([0, node_samples]);
+            d.values_info = d3.keys(target_colors).map(function(i, target_name){
+                return {target_name: target_name, y0: y(y0), y1: y(y0 += d.value[i])}
+            })
+            return d.values_info; 
+          })
+    .enter().append("rect")
+        .attr("width", rect_width)
+        .attr("y", function(d) { return d.y1; })
+        .attr("height", function(d) { return d.y0 - d.y1; })
+        .style("fill", function(d) { return target_colors[d.target_name];});
+
+    var text = nodeEnter.append('text')
+    		.attr('x', 18)
+    		.attr('y', function(d){
+                return h_node(d.sample) / 2 - 20;             
+    		});
+
+    text.append('tspan')
+    		.style('font-weight', 'bold')
+    		.text(function(d) {
+                return d.name;
+    		});
+
+
+    var text_gap = 15;
+
+    text.append('tspan')
+            .attr('x', 18)
+            .attr('y', function(d){
+                return h_node(d.sample) / 2 - 20 + text_gap;
+            })
+            .style('font-size', '11px')
+            .style('fill', '#555')
+            .text(function(d) {
+                return 'Values: [' + d.value + ']';
+            });
+
+    text.append('tspan')
+            .attr('x', 18)
+            .attr('y', function(d){
+                return h_node(d.sample) / 2 - 20 + text_gap * 2;
+            })
+            .style('font-size', '11px')
+            .style('fill', '#555')
+            .text(function(d) {
+                return 'Predict: ' + d.predict;
+            });
+
+    nodeEnter.select('text').style('fill-opacity', 0); 
+
+    var nodeUpdate = node.transition()
+    		.duration(duration)
+    		.attr('transform', function(d) {
+                var height = h_node(+d.sample);                
+    			var width = rect_width;
+    			return 'translate(' + (d.y - width / 2) + ',' + (d.x - height / 2) + ')';
+    		});
+
+    nodeUpdate.select('text').style('fill-opacity', 1);
+
+    // transition exiting nodes to the parent's new position
+    var nodeExit = node.exit().transition()
+    		.duration(duration)
+    		.attr('transform', function(d) {
+    			return 'translate(' + source.y + ',' + source.x + ')';
+    		})
+    		.remove();
+
+    nodeExit.select('rect').attr('height', 1e-6);
+    nodeExit.select('text').style('fill-opacity', 0);
+
+    // draw the links
+    var link = svg.selectAll('path.link')
+    		.data(links, function(d) {
+    			return d.target.id;
+    		});
+
+    // enter any new links at the parent's previous position
+    link.enter().insert('path', 'g')
+    		.attr('class', 'link')
+    		.attr('d', function(d) {
+    			var o = {x: source.x0, y : source.y0};
+    			return diagonal({source:o, target: o});
+    		})
+    		.style('stroke-width', function(d){
+                return w_link(d.target.sample);
+    		})
+            .style('stroke', function(d){
+                link_color_scale.range(['#fff', d.target.color]);
+                //return link_color_scale(d.target.impurity);
+                return '#eee';
+            });
+
+    // transition links to their new position
+    link.transition()
+    		.duration(duration)
+    		.attr('d', diagonal);
+
+    // transition the existing links to the parent's new position
+    link.exit().transition()
+    		.duration(duration)
+    		.attr('d', function(d) {
+    			var o = {x: source.x, y: source.y};
+    			return diagonal({source: o, target: o});
+    		}).remove();
+
+    // stash the old positions for transition
+    nodes.forEach(function(d) {
+    	d.x0 = d.x;
+    	d.y0 = d.y;
+    });
+}
+
+function recurse(d, color) {
+	d3.selectAll('.link').each(function(l) {
+		if(l.target === d) {
+			d3.select(this)
+			.style('stroke-width', function(d){
+                return w_link(l.target.sample);              
+    		}).style('stroke', color);
+		}
+	});
+	if(d.parent) {
+		recurse(d.parent, color);
+	}
+}
+
+function mouseover(d) {
+	if(!d.children) {
+		var len = rules[d.self].length;
+		var info = d3.select(this).append('g').attr('class', 'hover');
+
+        var this_height = h_node(d.sample);
+		var rules_text = info.append('g').append('text')
+				.attr('y', this_height + 30);
+
+        rules_text.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', this_height + 30 + 15)
+                    //.attr('text-anchor', 'middle')
+                    .style('fill', '#303594')
+                    .text('Rules: ').style('font-weight', 'bold');
+
+		for(var i = 1; i <= len; i++) {
+			rules_text.append('tspan')
+					.attr('x', 0)
+					.attr('y', this_height + 30 + (i+1) * 15)
+					//.attr('text-anchor', 'middle')
+					.style('fill', '#303594')
+					.text(function(d) {
+						return rules[d.self][i - 1];
+					});
+		}
+
+		var bbox = info.node().getBBox();
+		var padding = 10;
+		var rect = d3.select(this).insert('rect', 'g')
+				.attr('class', 'info_bg')
+				.attr('x', bbox.x - padding)
+				.attr('y', bbox.y - padding)
+				.attr('width', bbox.width + padding * 2)
+				.attr('height', bbox.height + padding * 2)
+				.style('fill', '#fff')
+				.style('stroke', '#ff546b')
+				.style('stroke-width', 2);
+
+		// make the rule infomation on the first layer
+		this.parentNode.appendChild(this);
+
+		d3.select(this).selectAll('rect').style('stroke', '#ff546b').style('stroke-width', 2);
+		recurse(d, d.color);
+	
+	}
+}
+
+function mouseout(d) {
+	d3.select('.hover').remove();
+	d3.select('.info_bg').remove();
+
+	d3.select(this).style('stroke', function(d) {
+		if(d._children){
+			var stroke_color = '#303594';
+		}else{
+			var stroke_color = null;
+		}
+		d3.select(this).selectAll('rect').style('stroke', stroke_color).style('stroke-width', 2);
+		return null;
+	});
+
+    d3.selectAll('.link').style('stroke', function(d){
+                link_color_scale.range(['#fff', d.target.color]);
+                //return link_color_scale(d.target.impurity);
+                return '#eee';
+            });
+}
+
+function click(d) {
+	if(d.children) {
+		d._children = d.children;
+		d.children = null;
+	}else {
+		d.children = d._children;
+		d._children = null;
+	}
+	update(d);
+}
+
+</script>
+</body>
+</html>
