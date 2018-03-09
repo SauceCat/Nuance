@@ -50,7 +50,7 @@ text.hover {
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var margin = {top: 50, right: 100, bottom: 150, left: 50};
+var margin = {top: 50, right: 50, bottom: 150, left: 50};
 var tree_depth = {{ tree_depth|safe }};
 var width = {{ width }}, height = {{ height }};
 var tree_gap = (width - margin['left'] - margin['right']) * 1.0 / tree_depth;
@@ -63,7 +63,6 @@ var rules = {{ rule|safe }};
 var num_node = {{ num_node|safe }};
 var tree_depth = {{ tree_depth|safe }};
 
-var tree = d3.layout.tree().size([height, width]);
 var diagonal = d3.svg.diagonal()
         .projection(function(d){
             return [d.y, d.x];
@@ -91,6 +90,13 @@ var w_link = d3.scale.linear()
     .domain([parseInt(min_samples), parseInt(max_samples)])
     .clamp(true)
     .range([10, 200]);
+
+var tree = d3.layout.tree().size([height, width])
+                .separation(function(a, b) {
+                    var height = h_node(a.sample) + h_node(b.sample),
+                    distance = height / 2 + 16; // horizontal distance between nodes = 16
+                    return distance;
+           });
 
 root = {{ tree|safe }};
 var link_color_scale = d3.scale.linear()
@@ -145,10 +151,11 @@ function update(source) {
         .attr("height", function(d) { return d.y0 - d.y1; })
         .style("fill", function(d) { return target_colors[d.target_name];});
 
+    var text_gap = 15;
     var text = nodeEnter.append('text')
     		.attr('x', 18)
     		.attr('y', function(d){
-                return h_node(d.sample) / 2 - 20;             
+                return h_node(d.sample) / 2 - text_gap + 3;             
     		});
 
     text.append('tspan')
@@ -156,14 +163,12 @@ function update(source) {
     		.text(function(d) {
                 return d.name;
     		});
-
-
-    var text_gap = 15;
+    
 
     text.append('tspan')
             .attr('x', 18)
             .attr('y', function(d){
-                return h_node(d.sample) / 2 - 20 + text_gap;
+                return h_node(d.sample) / 2 + 3;
             })
             .style('font-size', '11px')
             .style('fill', '#555')
@@ -174,7 +179,7 @@ function update(source) {
     text.append('tspan')
             .attr('x', 18)
             .attr('y', function(d){
-                return h_node(d.sample) / 2 - 20 + text_gap * 2;
+                return h_node(d.sample) / 2 + text_gap + 3;
             })
             .style('font-size', '11px')
             .style('fill', '#555')
@@ -219,7 +224,8 @@ function update(source) {
     			return diagonal({source:o, target: o});
     		})
     		.style('stroke-width', function(d){
-                return w_link(d.target.sample);
+                //return w_link(d.target.sample);
+                return h_node(d.target.sample);
     		})
             .style('stroke', function(d){
                 link_color_scale.range(['#fff', d.target.color]);
@@ -230,7 +236,16 @@ function update(source) {
     // transition links to their new position
     link.transition()
     		.duration(duration)
-    		.attr('d', diagonal);
+            .attr('d', function(d){
+                var source_h = h_node(d.source.sample);
+                var target_h = h_node(d.target.sample);
+                if(d.target.pos=="left") {
+                    var o = {x: d.source.x - (source_h - target_h) / 2., y : d.source.y};
+                }else{
+                    var o = {x: d.source.x + (source_h - target_h) / 2., y : d.source.y};
+                }
+                return diagonal({source:o, target: d.target});
+            });
 
     // transition the existing links to the parent's new position
     link.exit().transition()
@@ -252,7 +267,8 @@ function recurse(d, color) {
 		if(l.target === d) {
 			d3.select(this)
 			.style('stroke-width', function(d){
-                return w_link(l.target.sample);              
+                //return w_link(l.target.sample);              
+                return h_node(d.target.sample);
     		}).style('stroke', color);
 		}
 	});
@@ -263,47 +279,55 @@ function recurse(d, color) {
 
 function mouseover(d) {
 	if(!d.children) {
-		var len = rules[d.self].length;
-		var info = d3.select(this).append('g').attr('class', 'hover');
+        var rule = rules[d.self];
 
-        var this_height = h_node(d.sample);
-		var rules_text = info.append('g').append('text')
-				.attr('y', this_height + 30);
+        var append = ['Predict: ' + d.predict, 'Impurity: ' + d.impurity, ''];
+        rule = append.concat(rule);
 
-        rules_text.append('tspan')
+        var len = rule.length;
+        var info = d3.select(this).append('g').attr('class', 'hover');
+        //var y0 = 35;
+        var y0 = h_node(d.sample) + 20;
+        var rules_text = info.append('g').append('text').attr('y', y0);
+
+        for(var i = 1; i <= len; i++) {
+            rules_text.append('tspan')
                     .attr('x', 0)
-                    .attr('y', this_height + 30 + 15)
-                    //.attr('text-anchor', 'middle')
-                    .style('fill', '#303594')
-                    .text('Rules: ').style('font-weight', 'bold');
+                    .attr('y', y0 + i * 15)
+                    .attr('text-anchor', 'left')
+                    .style('font-weight', function(){
+                        if(i <= 3) {
+                            return 'bold';
+                        }else{
+                            return null;
+                        }
+                    })
+                    .style('fill', function(){
+                        if(i <= 3) {
+                            return '#000';
+                        }else{
+                            return d.color;
+                        }
+                    })
+                    .text(function() {
+                        return rule[i - 1];
+                    });
+        }
 
-		for(var i = 1; i <= len; i++) {
-			rules_text.append('tspan')
-					.attr('x', 0)
-					.attr('y', this_height + 30 + (i+1) * 15)
-					//.attr('text-anchor', 'middle')
-					.style('fill', '#303594')
-					.text(function(d) {
-						return rules[d.self][i - 1];
-					});
-		}
+        var bbox = info.node().getBBox();
+        var padding = 10;
+        var rect = d3.select(this).insert('rect', 'g')
+                .attr('class', 'info_bg')
+                .attr('x', bbox.x - padding)
+                .attr('y', bbox.y - padding)
+                .attr('width', bbox.width + padding * 2)
+                .attr('height', bbox.height + padding * 2)
+                .style('fill', 'white')
+                .style('stroke', d.color)
+                .style('stroke-width', 2);
 
-		var bbox = info.node().getBBox();
-		var padding = 10;
-		var rect = d3.select(this).insert('rect', 'g')
-				.attr('class', 'info_bg')
-				.attr('x', bbox.x - padding)
-				.attr('y', bbox.y - padding)
-				.attr('width', bbox.width + padding * 2)
-				.attr('height', bbox.height + padding * 2)
-				.style('fill', '#fff')
-				.style('stroke', '#ff546b')
-				.style('stroke-width', 2);
-
-		// make the rule infomation on the first layer
-		this.parentNode.appendChild(this);
-
-		d3.select(this).selectAll('rect').style('stroke', '#ff546b').style('stroke-width', 2);
+        // make the rule infomation on the first layer
+        this.parentNode.appendChild(this);      
 		recurse(d, d.color);
 	
 	}
@@ -315,11 +339,14 @@ function mouseout(d) {
 
 	d3.select(this).style('stroke', function(d) {
 		if(d._children){
-			var stroke_color = '#303594';
+			//var stroke_color = '#303594';
+            var rect_w = 50;
 		}else{
-			var stroke_color = null;
+			//var stroke_color = null;
+            var rect_w = rect_width;
 		}
-		d3.select(this).selectAll('rect').style('stroke', stroke_color).style('stroke-width', 2);
+		d3.select(this).selectAll('rect').style('stroke-width', 2).style('width', rect_w);
+        //.style('stroke', stroke_color)
 		return null;
 	});
 

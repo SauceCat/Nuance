@@ -50,9 +50,9 @@ text.hover {
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var margin = {top: 50, right: 100, bottom: 150, left: 50};
+var margin = {top: 50, right: 50, bottom: 150, left: 50};
 var tree_depth = 8;
-var width = 1500, height = 1400;
+var width = 1500, height = 1200;
 var tree_gap = (width - margin['left'] - margin['right']) * 1.0 / tree_depth;
 
 var i = 0,
@@ -63,7 +63,6 @@ var rules = {"0": [], "1": ["Sex: 0"], "2": ["Sex: 1"], "3": ["Sex: 0", "Pclass 
 var num_node = 39;
 var tree_depth = 8;
 
-var tree = d3.layout.tree().size([height, width]);
 var diagonal = d3.svg.diagonal()
         .projection(function(d){
             return [d.y, d.x];
@@ -92,7 +91,14 @@ var w_link = d3.scale.linear()
     .clamp(true)
     .range([10, 200]);
 
-root = {"name": "Titanic_Tree", "parent": "null", "predict": "Not Survived", "self": 0, "value": [549, 342], "sample": 891, "color": "#aec7e8", "children": [{"name": "Sex: 0", "parent": 0, "predict": "Survived", "self": 1, "value": [81, 233], "sample": 314, "color": "#ff7f0e", "children": [{"name": "Pclass <= 2", "parent": 1, "predict": "Survived", "self": 3, "value": [9, 161], "sample": 170, "color": "#ff7f0e", "impurity": 0.1}, {"name": "Pclass > 2", "parent": 1, "predict": "Not Survived", "self": 4, "value": [72, 72], "sample": 144, "color": "#aec7e8", "children": [{"name": "Fare <= 23.35", "parent": 4, "predict": "Survived", "self": 9, "value": [48, 69], "sample": 117, "color": "#ff7f0e", "children": [{"name": "Age <= 36.5", "parent": 9, "predict": "Survived", "self": 13, "value": [42, 68], "sample": 110, "color": "#ff7f0e", "children": [{"name": "Embarked_S: 0", "parent": 13, "predict": "Survived", "self": 21, "value": [15, 38], "sample": 53, "color": "#ff7f0e", "children": [{"name": "Age <= 29.75", "parent": 21, "predict": "Survived", "self": 23, "value": [13, 38], "sample": 51, "color": "#ff7f0e", "children": [{"name": "Fare <= 15.373", "parent": 23, "predict": "Survived", "self": 25, "value": [13, 27], "sample": 40, "color": "#ff7f0e", "children": [{"name": "Fare <= 13.935", "parent": 25, "predict": "Survived", "self": 27, "value": [6, 25], "sample": 31, "color": "#ff7f0e", "impurity": 0.312}, {"name": "Fare > 13.935", "parent": 25, "predict": "Not Survived", "self": 28, "value": [7, 2], "sample": 9, "color": "#aec7e8", "impurity": 0.346}], "impurity": 0.439}, {"name": "Fare > 15.373", "parent": 23, "predict": "Survived", "self": 26, "value": [0, 11], "sample": 11, "color": "#ff7f0e", "impurity": 0.0}], "impurity": 0.38}, {"name": "Age > 29.75", "parent": 21, "predict": "Not Survived", "self": 24, "value": [2, 0], "sample": 2, "color": "#aec7e8", "impurity": 0.0}], "impurity": 0.406}, {"name": "Embarked_S: 1", "parent": 13, "predict": "Survived", "self": 22, "value": [27, 30], "sample": 57, "color": "#ff7f0e", "children": [{"name": "Fare <= 10.825", "parent": 22, "predict": "Not Survived", "self": 33, "value": [19, 14], "sample": 33, "color": "#aec7e8", "children": [{"name": "Fare <= 7.762", "parent": 33, "predict": "Survived", "self": 37, "value": [1, 5], "sample": 6, "color": "#ff7f0e", "impurity": 0.278}, {"name": "Fare > 7.762", "parent": 33, "predict": "Not Survived", "self": 38, "value": [18, 9], "sample": 27, "color": "#aec7e8", "impurity": 0.444}], "impurity": 0.489}, {"name": "Fare > 10.825", "parent": 22, "predict": "Survived", "self": 34, "value": [8, 16], "sample": 24, "color": "#ff7f0e", "children": [{"name": "Fare <= 17.6", "parent": 34, "predict": "Survived", "self": 35, "value": [2, 13], "sample": 15, "color": "#ff7f0e", "impurity": 0.231}, {"name": "Fare > 17.6", "parent": 34, "predict": "Not Survived", "self": 36, "value": [6, 3], "sample": 9, "color": "#aec7e8", "impurity": 0.444}], "impurity": 0.444}], "impurity": 0.499}], "impurity": 0.472}, {"name": "Age > 36.5", "parent": 9, "predict": "Not Survived", "self": 14, "value": [6, 1], "sample": 7, "color": "#aec7e8", "children": [{"name": "Age <= 55.0", "parent": 14, "predict": "Not Survived", "self": 29, "value": [6, 0], "sample": 6, "color": "#aec7e8", "impurity": 0.0}, {"name": "Age > 55.0", "parent": 14, "predict": "Survived", "self": 30, "value": [0, 1], "sample": 1, "color": "#ff7f0e", "impurity": 0.0}], "impurity": 0.245}], "impurity": 0.484}, {"name": "Fare > 23.35", "parent": 4, "predict": "Not Survived", "self": 10, "value": [24, 3], "sample": 27, "color": "#aec7e8", "children": [{"name": "Parch <= 0", "parent": 10, "predict": "Survived", "self": 31, "value": [0, 1], "sample": 1, "color": "#ff7f0e", "impurity": 0.0}, {"name": "Parch > 0", "parent": 10, "predict": "Not Survived", "self": 32, "value": [24, 2], "sample": 26, "color": "#aec7e8", "impurity": 0.142}], "impurity": 0.198}], "impurity": 0.5}], "impurity": 0.383}, {"name": "Sex: 1", "parent": 0, "predict": "Not Survived", "self": 2, "value": [468, 109], "sample": 577, "color": "#aec7e8", "children": [{"name": "Age <= 6.5", "parent": 2, "predict": "Survived", "self": 5, "value": [8, 16], "sample": 24, "color": "#ff7f0e", "children": [{"name": "SibSp <= 2", "parent": 5, "predict": "Survived", "self": 11, "value": [0, 15], "sample": 15, "color": "#ff7f0e", "impurity": 0.0}, {"name": "SibSp > 2", "parent": 5, "predict": "Not Survived", "self": 12, "value": [8, 1], "sample": 9, "color": "#aec7e8", "impurity": 0.198}], "impurity": 0.444}, {"name": "Age > 6.5", "parent": 2, "predict": "Not Survived", "self": 6, "value": [460, 93], "sample": 553, "color": "#aec7e8", "children": [{"name": "Pclass <= 1", "parent": 6, "predict": "Not Survived", "self": 7, "value": [77, 43], "sample": 120, "color": "#aec7e8", "children": [{"name": "Fare <= 26.144", "parent": 7, "predict": "Not Survived", "self": 15, "value": [10, 0], "sample": 10, "color": "#aec7e8", "impurity": 0.0}, {"name": "Fare > 26.144", "parent": 7, "predict": "Not Survived", "self": 16, "value": [67, 43], "sample": 110, "color": "#aec7e8", "children": [{"name": "Age <= 53.0", "parent": 16, "predict": "Not Survived", "self": 17, "value": [49, 40], "sample": 89, "color": "#aec7e8", "children": [{"name": "Fare <= 27.135", "parent": 17, "predict": "Survived", "self": 19, "value": [2, 11], "sample": 13, "color": "#ff7f0e", "impurity": 0.26}, {"name": "Fare > 27.135", "parent": 17, "predict": "Not Survived", "self": 20, "value": [47, 29], "sample": 76, "color": "#aec7e8", "impurity": 0.472}], "impurity": 0.495}, {"name": "Age > 53.0", "parent": 16, "predict": "Not Survived", "self": 18, "value": [18, 3], "sample": 21, "color": "#aec7e8", "impurity": 0.245}], "impurity": 0.476}], "impurity": 0.46}, {"name": "Pclass > 1", "parent": 6, "predict": "Not Survived", "self": 8, "value": [383, 50], "sample": 433, "color": "#aec7e8", "impurity": 0.204}], "impurity": 0.28}], "impurity": 0.306}], "impurity": 0.473};
+var tree = d3.layout.tree().size([height, width])
+                .separation(function(a, b) {
+                    var height = h_node(a.sample) + h_node(b.sample),
+                    distance = height / 2 + 16; // horizontal distance between nodes = 16
+                    return distance;
+           });
+
+root = {"name": "Titanic_Tree", "parent": "null", "predict": "Not Survived", "self": 0, "pos": "null", "value": [549, 342], "sample": 891, "color": "#aec7e8", "children": [{"name": "Sex: 0", "parent": 0, "predict": "Survived", "self": 1, "pos": "left", "value": [81, 233], "sample": 314, "color": "#ff7f0e", "children": [{"name": "Pclass <= 2", "parent": 1, "predict": "Survived", "self": 3, "pos": "left", "value": [9, 161], "sample": 170, "color": "#ff7f0e", "impurity": 0.1}, {"name": "Pclass > 2", "parent": 1, "predict": "Not Survived", "self": 4, "pos": "right", "value": [72, 72], "sample": 144, "color": "#aec7e8", "children": [{"name": "Fare <= 23.35", "parent": 4, "predict": "Survived", "self": 9, "pos": "left", "value": [48, 69], "sample": 117, "color": "#ff7f0e", "children": [{"name": "Age <= 36.5", "parent": 9, "predict": "Survived", "self": 13, "pos": "left", "value": [42, 68], "sample": 110, "color": "#ff7f0e", "children": [{"name": "Embarked_S: 0", "parent": 13, "predict": "Survived", "self": 21, "pos": "left", "value": [15, 38], "sample": 53, "color": "#ff7f0e", "children": [{"name": "Age <= 29.75", "parent": 21, "predict": "Survived", "self": 23, "pos": "left", "value": [13, 38], "sample": 51, "color": "#ff7f0e", "children": [{"name": "Fare <= 15.373", "parent": 23, "predict": "Survived", "self": 25, "pos": "left", "value": [13, 27], "sample": 40, "color": "#ff7f0e", "children": [{"name": "Fare <= 13.935", "parent": 25, "predict": "Survived", "self": 27, "pos": "left", "value": [6, 25], "sample": 31, "color": "#ff7f0e", "impurity": 0.312}, {"name": "Fare > 13.935", "parent": 25, "predict": "Not Survived", "self": 28, "pos": "right", "value": [7, 2], "sample": 9, "color": "#aec7e8", "impurity": 0.346}], "impurity": 0.439}, {"name": "Fare > 15.373", "parent": 23, "predict": "Survived", "self": 26, "pos": "right", "value": [0, 11], "sample": 11, "color": "#ff7f0e", "impurity": 0.0}], "impurity": 0.38}, {"name": "Age > 29.75", "parent": 21, "predict": "Not Survived", "self": 24, "pos": "right", "value": [2, 0], "sample": 2, "color": "#aec7e8", "impurity": 0.0}], "impurity": 0.406}, {"name": "Embarked_S: 1", "parent": 13, "predict": "Survived", "self": 22, "pos": "right", "value": [27, 30], "sample": 57, "color": "#ff7f0e", "children": [{"name": "Fare <= 10.825", "parent": 22, "predict": "Not Survived", "self": 33, "pos": "left", "value": [19, 14], "sample": 33, "color": "#aec7e8", "children": [{"name": "Fare <= 7.762", "parent": 33, "predict": "Survived", "self": 37, "pos": "left", "value": [1, 5], "sample": 6, "color": "#ff7f0e", "impurity": 0.278}, {"name": "Fare > 7.762", "parent": 33, "predict": "Not Survived", "self": 38, "pos": "right", "value": [18, 9], "sample": 27, "color": "#aec7e8", "impurity": 0.444}], "impurity": 0.489}, {"name": "Fare > 10.825", "parent": 22, "predict": "Survived", "self": 34, "pos": "right", "value": [8, 16], "sample": 24, "color": "#ff7f0e", "children": [{"name": "Fare <= 17.6", "parent": 34, "predict": "Survived", "self": 35, "pos": "left", "value": [2, 13], "sample": 15, "color": "#ff7f0e", "impurity": 0.231}, {"name": "Fare > 17.6", "parent": 34, "predict": "Not Survived", "self": 36, "pos": "right", "value": [6, 3], "sample": 9, "color": "#aec7e8", "impurity": 0.444}], "impurity": 0.444}], "impurity": 0.499}], "impurity": 0.472}, {"name": "Age > 36.5", "parent": 9, "predict": "Not Survived", "self": 14, "pos": "right", "value": [6, 1], "sample": 7, "color": "#aec7e8", "children": [{"name": "Age <= 55.0", "parent": 14, "predict": "Not Survived", "self": 29, "pos": "left", "value": [6, 0], "sample": 6, "color": "#aec7e8", "impurity": 0.0}, {"name": "Age > 55.0", "parent": 14, "predict": "Survived", "self": 30, "pos": "right", "value": [0, 1], "sample": 1, "color": "#ff7f0e", "impurity": 0.0}], "impurity": 0.245}], "impurity": 0.484}, {"name": "Fare > 23.35", "parent": 4, "predict": "Not Survived", "self": 10, "pos": "right", "value": [24, 3], "sample": 27, "color": "#aec7e8", "children": [{"name": "Parch <= 0", "parent": 10, "predict": "Survived", "self": 31, "pos": "left", "value": [0, 1], "sample": 1, "color": "#ff7f0e", "impurity": 0.0}, {"name": "Parch > 0", "parent": 10, "predict": "Not Survived", "self": 32, "pos": "right", "value": [24, 2], "sample": 26, "color": "#aec7e8", "impurity": 0.142}], "impurity": 0.198}], "impurity": 0.5}], "impurity": 0.383}, {"name": "Sex: 1", "parent": 0, "predict": "Not Survived", "self": 2, "pos": "right", "value": [468, 109], "sample": 577, "color": "#aec7e8", "children": [{"name": "Age <= 6.5", "parent": 2, "predict": "Survived", "self": 5, "pos": "left", "value": [8, 16], "sample": 24, "color": "#ff7f0e", "children": [{"name": "SibSp <= 2", "parent": 5, "predict": "Survived", "self": 11, "pos": "left", "value": [0, 15], "sample": 15, "color": "#ff7f0e", "impurity": 0.0}, {"name": "SibSp > 2", "parent": 5, "predict": "Not Survived", "self": 12, "pos": "right", "value": [8, 1], "sample": 9, "color": "#aec7e8", "impurity": 0.198}], "impurity": 0.444}, {"name": "Age > 6.5", "parent": 2, "predict": "Not Survived", "self": 6, "pos": "right", "value": [460, 93], "sample": 553, "color": "#aec7e8", "children": [{"name": "Pclass <= 1", "parent": 6, "predict": "Not Survived", "self": 7, "pos": "left", "value": [77, 43], "sample": 120, "color": "#aec7e8", "children": [{"name": "Fare <= 26.144", "parent": 7, "predict": "Not Survived", "self": 15, "pos": "left", "value": [10, 0], "sample": 10, "color": "#aec7e8", "impurity": 0.0}, {"name": "Fare > 26.144", "parent": 7, "predict": "Not Survived", "self": 16, "pos": "right", "value": [67, 43], "sample": 110, "color": "#aec7e8", "children": [{"name": "Age <= 53.0", "parent": 16, "predict": "Not Survived", "self": 17, "pos": "left", "value": [49, 40], "sample": 89, "color": "#aec7e8", "children": [{"name": "Fare <= 27.135", "parent": 17, "predict": "Survived", "self": 19, "pos": "left", "value": [2, 11], "sample": 13, "color": "#ff7f0e", "impurity": 0.26}, {"name": "Fare > 27.135", "parent": 17, "predict": "Not Survived", "self": 20, "pos": "right", "value": [47, 29], "sample": 76, "color": "#aec7e8", "impurity": 0.472}], "impurity": 0.495}, {"name": "Age > 53.0", "parent": 16, "predict": "Not Survived", "self": 18, "pos": "right", "value": [18, 3], "sample": 21, "color": "#aec7e8", "impurity": 0.245}], "impurity": 0.476}], "impurity": 0.46}, {"name": "Pclass > 1", "parent": 6, "predict": "Not Survived", "self": 8, "pos": "right", "value": [383, 50], "sample": 433, "color": "#aec7e8", "impurity": 0.204}], "impurity": 0.28}], "impurity": 0.306}], "impurity": 0.473};
 var link_color_scale = d3.scale.linear()
     .domain([0.6, 0.])
     .clamp(true);
@@ -145,10 +151,11 @@ function update(source) {
         .attr("height", function(d) { return d.y0 - d.y1; })
         .style("fill", function(d) { return target_colors[d.target_name];});
 
+    var text_gap = 15;
     var text = nodeEnter.append('text')
     		.attr('x', 18)
     		.attr('y', function(d){
-                return h_node(d.sample) / 2 - 20;             
+                return h_node(d.sample) / 2 - text_gap + 3;             
     		});
 
     text.append('tspan')
@@ -156,14 +163,12 @@ function update(source) {
     		.text(function(d) {
                 return d.name;
     		});
-
-
-    var text_gap = 15;
+    
 
     text.append('tspan')
             .attr('x', 18)
             .attr('y', function(d){
-                return h_node(d.sample) / 2 - 20 + text_gap;
+                return h_node(d.sample) / 2 + 3;
             })
             .style('font-size', '11px')
             .style('fill', '#555')
@@ -174,7 +179,7 @@ function update(source) {
     text.append('tspan')
             .attr('x', 18)
             .attr('y', function(d){
-                return h_node(d.sample) / 2 - 20 + text_gap * 2;
+                return h_node(d.sample) / 2 + text_gap + 3;
             })
             .style('font-size', '11px')
             .style('fill', '#555')
@@ -219,7 +224,8 @@ function update(source) {
     			return diagonal({source:o, target: o});
     		})
     		.style('stroke-width', function(d){
-                return w_link(d.target.sample);
+                //return w_link(d.target.sample);
+                return h_node(d.target.sample);
     		})
             .style('stroke', function(d){
                 link_color_scale.range(['#fff', d.target.color]);
@@ -230,7 +236,16 @@ function update(source) {
     // transition links to their new position
     link.transition()
     		.duration(duration)
-    		.attr('d', diagonal);
+            .attr('d', function(d){
+                var source_h = h_node(d.source.sample);
+                var target_h = h_node(d.target.sample);
+                if(d.target.pos=="left") {
+                    var o = {x: d.source.x - (source_h - target_h) / 2., y : d.source.y};
+                }else{
+                    var o = {x: d.source.x + (source_h - target_h) / 2., y : d.source.y};
+                }
+                return diagonal({source:o, target: d.target});
+            });
 
     // transition the existing links to the parent's new position
     link.exit().transition()
@@ -252,7 +267,8 @@ function recurse(d, color) {
 		if(l.target === d) {
 			d3.select(this)
 			.style('stroke-width', function(d){
-                return w_link(l.target.sample);              
+                //return w_link(l.target.sample);              
+                return h_node(d.target.sample);
     		}).style('stroke', color);
 		}
 	});
@@ -263,47 +279,55 @@ function recurse(d, color) {
 
 function mouseover(d) {
 	if(!d.children) {
-		var len = rules[d.self].length;
-		var info = d3.select(this).append('g').attr('class', 'hover');
+        var rule = rules[d.self];
 
-        var this_height = h_node(d.sample);
-		var rules_text = info.append('g').append('text')
-				.attr('y', this_height + 30);
+        var append = ['Predict: ' + d.predict, 'Impurity: ' + d.impurity, ''];
+        rule = append.concat(rule);
 
-        rules_text.append('tspan')
+        var len = rule.length;
+        var info = d3.select(this).append('g').attr('class', 'hover');
+        //var y0 = 35;
+        var y0 = h_node(d.sample) + 20;
+        var rules_text = info.append('g').append('text').attr('y', y0);
+
+        for(var i = 1; i <= len; i++) {
+            rules_text.append('tspan')
                     .attr('x', 0)
-                    .attr('y', this_height + 30 + 15)
-                    //.attr('text-anchor', 'middle')
-                    .style('fill', '#303594')
-                    .text('Rules: ').style('font-weight', 'bold');
+                    .attr('y', y0 + i * 15)
+                    .attr('text-anchor', 'left')
+                    .style('font-weight', function(){
+                        if(i <= 3) {
+                            return 'bold';
+                        }else{
+                            return null;
+                        }
+                    })
+                    .style('fill', function(){
+                        if(i <= 3) {
+                            return '#000';
+                        }else{
+                            return d.color;
+                        }
+                    })
+                    .text(function() {
+                        return rule[i - 1];
+                    });
+        }
 
-		for(var i = 1; i <= len; i++) {
-			rules_text.append('tspan')
-					.attr('x', 0)
-					.attr('y', this_height + 30 + (i+1) * 15)
-					//.attr('text-anchor', 'middle')
-					.style('fill', '#303594')
-					.text(function(d) {
-						return rules[d.self][i - 1];
-					});
-		}
+        var bbox = info.node().getBBox();
+        var padding = 10;
+        var rect = d3.select(this).insert('rect', 'g')
+                .attr('class', 'info_bg')
+                .attr('x', bbox.x - padding)
+                .attr('y', bbox.y - padding)
+                .attr('width', bbox.width + padding * 2)
+                .attr('height', bbox.height + padding * 2)
+                .style('fill', 'white')
+                .style('stroke', d.color)
+                .style('stroke-width', 2);
 
-		var bbox = info.node().getBBox();
-		var padding = 10;
-		var rect = d3.select(this).insert('rect', 'g')
-				.attr('class', 'info_bg')
-				.attr('x', bbox.x - padding)
-				.attr('y', bbox.y - padding)
-				.attr('width', bbox.width + padding * 2)
-				.attr('height', bbox.height + padding * 2)
-				.style('fill', '#fff')
-				.style('stroke', '#ff546b')
-				.style('stroke-width', 2);
-
-		// make the rule infomation on the first layer
-		this.parentNode.appendChild(this);
-
-		d3.select(this).selectAll('rect').style('stroke', '#ff546b').style('stroke-width', 2);
+        // make the rule infomation on the first layer
+        this.parentNode.appendChild(this);      
 		recurse(d, d.color);
 	
 	}
@@ -315,11 +339,14 @@ function mouseout(d) {
 
 	d3.select(this).style('stroke', function(d) {
 		if(d._children){
-			var stroke_color = '#303594';
+			//var stroke_color = '#303594';
+            var rect_w = 50;
 		}else{
-			var stroke_color = null;
+			//var stroke_color = null;
+            var rect_w = rect_width;
 		}
-		d3.select(this).selectAll('rect').style('stroke', stroke_color).style('stroke-width', 2);
+		d3.select(this).selectAll('rect').style('stroke-width', 2).style('width', rect_w);
+        //.style('stroke', stroke_color)
 		return null;
 	});
 

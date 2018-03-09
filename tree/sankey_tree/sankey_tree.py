@@ -122,6 +122,7 @@ def _parse_tree(node_id, parent, pos, tree_info):
 	node['value'] = [int(v) for v in tree_model.tree_.value[node_id][0]]
 	node['predict'] = target_names[np.argmax(node['value'])]
 	node['color'] = tree_info['target_colors'][np.argmax(node['value'])]
+	node['pos'] = pos
 
 	if tree_model.tree_.children_left[node_id] != -1 or tree_model.tree_.children_right[node_id] != -1:
 		node['children'] = []
