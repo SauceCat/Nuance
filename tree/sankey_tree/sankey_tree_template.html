@@ -16,53 +16,42 @@
 	opacity: 0.8;
 }
 
-text.hover {
-	fill: #000;
-}
-
-#info {
-	font-family: helvetica;
-	font-size: 15px;
-	margin-top: 20px;
-}
-
-#product {
-	font-size: 25px;
-	color: #ff546b;
-	font-weight: bold;
-}
-
-#container {
-    margin: 5vh 5vw;
-    font-family: helvetica;
-}
-
-#container h1 {
-    font-weight: normal;
-}
 </style>
 </head>
 
 <body>
-<div id='container'>
-<div id='tree'></div>
-</div>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
 
 var margin = {top: 50, right: 50, bottom: 150, left: 50};
-var tree_depth = {{ tree_depth|safe }};
+
+// collect all inputs
+var tree_depth = {{ tree_depth }};
+var rules = {{ rule|safe }};
+var num_node = {{ num_node }};
 var width = {{ width }}, height = {{ height }};
+var max_samples = {{ max_samples }};
+var min_samples = {{ min_samples }};
+var target_colors = {{ target_colors|safe }};
+var root = {{ tree|safe }};
+
+// calculate tree gap
 var tree_gap = (width - margin['left'] - margin['right']) * 1.0 / tree_depth;
 
-var i = 0,
-duration = 750,
-root;
+// node height scale based on number of samples
+var h_node = d3.scale.linear()
+    .domain([parseInt(min_samples), parseInt(max_samples)])
+    .clamp(true)
+    .range([10, 350]);
 
-var rules = {{ rule|safe }};
-var num_node = {{ num_node|safe }};
-var tree_depth = {{ tree_depth|safe }};
-
+// generate tree layout (horizonal)
+var tree = d3.layout.tree().size([height, width])
+                .separation(function(a, b) {
+                    var height = h_node(a.sample) + h_node(b.sample),
+                    // horizontal distance between nodes = 16
+                    distance = height / 2 + 16; 
+                    return distance;
+                });
 var diagonal = d3.svg.diagonal()
         .projection(function(d){
             return [d.y, d.x];
@@ -74,37 +63,14 @@ var svg = d3.select('body').append('svg')
         .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+var i = 0, duration = 750;
 var rect_width = 15;
+// height scale for each tree node
 var y = d3.scale.linear();
-
-var max_samples = {{ max_samples }};
-var min_samples = {{ min_samples }};
-var target_colors = {{ target_colors|safe }};
-
-var h_node = d3.scale.linear()
-    .domain([parseInt(min_samples), parseInt(max_samples)])
-    .clamp(true)
-    .range([10, 350]);
-
-var w_link = d3.scale.linear()
-    .domain([parseInt(min_samples), parseInt(max_samples)])
-    .clamp(true)
-    .range([10, 200]);
-
-var tree = d3.layout.tree().size([height, width])
-                .separation(function(a, b) {
-                    var height = h_node(a.sample) + h_node(b.sample),
-                    distance = height / 2 + 16; // horizontal distance between nodes = 16
-                    return distance;
-           });
-
-root = {{ tree|safe }};
-var link_color_scale = d3.scale.linear()
-    .domain([0.6, 0.])
-    .clamp(true);
 
 root.x0 = height / 2;
 root.y0 = 0;
+// update tree
 update(root);
 
 
@@ -135,22 +101,27 @@ function update(source) {
     		.on('mouseover', mouseover)
     		.on('mouseout', mouseout);
 
+    // draw tree nodes as a stacked bar
     nodeEnter.append("g").selectAll("rect")
-        .data(function(d) { 
-            var y0 = 0;
-            var node_samples = d.sample;
-            y.rangeRound([h_node(node_samples), 0]).domain([0, node_samples]);
-            d.values_info = d3.keys(target_colors).map(function(i, target_name){
-                return {target_name: target_name, y0: y(y0), y1: y(y0 += d.value[i])}
-            })
-            return d.values_info; 
-          })
-    .enter().append("rect")
-        .attr("width", rect_width)
-        .attr("y", function(d) { return d.y1; })
-        .attr("height", function(d) { return d.y0 - d.y1; })
-        .style("fill", function(d) { return target_colors[d.target_name];});
+            .data(function(d) { 
+                var y0 = 0;
+                var node_samples = d.sample;
+                y.rangeRound([h_node(node_samples), 0]).domain([0, node_samples]);
+                d.values_info = d3.keys(target_colors).map(function(i, target_name){
+                    // y0 will update 
+                    return {target_name: target_name, y0: y(y0), y1: y(y0 += d.value[i])}
+                })
+                return d.values_info; 
+              })
+            .enter().append("rect")
+                .attr("width", rect_width)
+                .attr("y", function(d) { return d.y1; })
+                .attr("height", function(d) { return d.y0 - d.y1; })
+                .style("fill", function(d) { 
+                    return target_colors[d.target_name];
+                });
 
+    // add text on tree nodes
     var text_gap = 15;
     var text = nodeEnter.append('text')
     		.attr('x', 18)
@@ -164,7 +135,6 @@ function update(source) {
                 return d.name;
     		});
     
-
     text.append('tspan')
             .attr('x', 18)
             .attr('y', function(d){
@@ -207,6 +177,7 @@ function update(source) {
     		})
     		.remove();
 
+    // hide nodes and texts
     nodeExit.select('rect').attr('height', 1e-6);
     nodeExit.select('text').style('fill-opacity', 0);
 
@@ -222,39 +193,24 @@ function update(source) {
     		.attr('d', function(d) {
                 var o = {x: source.x0, y : source.y0};
                 d_new = {source: {x: o.y, y:o.x, sample:d.source.sample}, target: {x: o.y, y: o.x, sample:d.target.sample}};
-    			//return diagonal({source:o, target: o});
                 return sankey_link(d_new);
     		})
-    		.style('stroke-width', function(d){
-                //return w_link(d.target.sample);
-                //return h_node(d.target.sample);
-    		})
-            .style('stroke', function(d){
-                link_color_scale.range(['#fff', d.target.color]);
-                //return link_color_scale(d.target.impurity);
-                return '#eee';
-            });
+            .style('stroke', '#eee');
 
     // transition links to their new position
     link.transition()
     		.duration(duration)
             .attr('d', function(d){
-                /*var source_h = h_node(d.source.sample);
-                var target_h = h_node(d.target.sample);
-                if(d.target.pos=="left") {
-                    var o = {x: d.source.x - (source_h - target_h) / 2., y : d.source.y};
-                }else{
-                    var o = {x: d.source.x + (source_h - target_h) / 2., y : d.source.y};
-                }
-                return diagonal({source:o, target: d.target});*/
                 var source_h = h_node(d.source.sample);
                 var target_h = h_node(d.target.sample);
+                // center the starting points 
                 if(d.target.pos=="left") {
                     var o = {x: d.source.x - (source_h - target_h) / 2., y : d.source.y};
                 }else{
                     var o = {x: d.source.x + (source_h - target_h) / 2., y : d.source.y};
                 }
-                d_new = {source: {x: o.y, y:o.x, sample:d.source.sample}, target: {x: d.target.y, y: d.target.x, sample:d.target.sample}};
+                d_new = {source: {x: o.y, y:o.x, sample:d.source.sample}, 
+                         target: {x: d.target.y, y: d.target.x, sample:d.target.sample}};
                 return sankey_link(d_new);
             });
 
@@ -263,8 +219,8 @@ function update(source) {
     		.duration(duration)
     		.attr('d', function(d) {
     			var o = {x: source.x, y: source.y};
-    			//return diagonal({source: o, target: o});
-                d_new = {source: {x: o.y, y:o.x, sample:d.source.sample}, target: {x: o.y, y: o.x, sample:d.target.sample}};
+                d_new = {source: {x: o.y, y:o.x, sample:d.source.sample}, 
+                         target: {x: o.y, y: o.x, sample:d.target.sample}};
                 return sankey_link(d_new);
     		}).remove();
 
@@ -276,17 +232,6 @@ function update(source) {
 }
 
 function sankey_link(d_new) {
-    /*
-    var source_h = h_node(d.source.sample);
-    var target_h = h_node(d.target.sample);
-    if(d.target.pos=="left") {
-                    var o = {x: d.source.x - (source_h - target_h) / 2., y : d.source.y};
-                }else{
-                    var o = {x: d.source.x + (source_h - target_h) / 2., y : d.source.y};
-                }
-
-    d_new = {source: {x: o.y, y:o.x}, target: {x: d.target.y, y: d.target.x}};*/
-
     var source_h = h_node(d_new.source.sample);
     var target_h = h_node(d_new.target.sample);
 
@@ -309,14 +254,11 @@ function sankey_link(d_new) {
          + "L" + x0 + "," + y0;
 }
 
+// recursively color the links when hovering on a tree node
 function recurse(d, color) {
 	d3.selectAll('.link').each(function(l) {
 		if(l.target === d) {
-			d3.select(this)
-			.style('stroke-width', function(d){
-                //return w_link(l.target.sample);              
-                //return h_node(d.target.sample);
-    		}).style('fill', color);
+			d3.select(this).style('fill', color);
 		}
 	});
 	if(d.parent) {
@@ -325,15 +267,14 @@ function recurse(d, color) {
 }
 
 function mouseover(d) {
+    // if this node has no children nodes
 	if(!d.children) {
         var rule = rules[d.self];
-
         var append = ['Predict: ' + d.predict, 'Impurity: ' + d.impurity, ''];
         rule = append.concat(rule);
 
         var len = rule.length;
         var info = d3.select(this).append('g').attr('class', 'hover');
-        //var y0 = 35;
         var y0 = h_node(d.sample) + 20;
         var rules_text = info.append('g').append('text').attr('y', y0);
 
@@ -361,6 +302,7 @@ function mouseover(d) {
                     });
         }
 
+        // draw the box
         var bbox = info.node().getBBox();
         var padding = 10;
         var rect = d3.select(this).insert('rect', 'g')
@@ -387,21 +329,14 @@ function mouseout(d) {
 	d3.select(this).style('stroke', function(d) {
 		if(d._children){
 			var stroke_color = '#000';
-            //var rect_w = 50;
 		}else{
 			var stroke_color = null;
-            //var rect_w = rect_width;
 		}
 		d3.select(this).selectAll('rect').style('stroke-width', 2).style('stroke', stroke_color);
-        //.style('stroke', stroke_color)
 		return null;
 	});
 
-    d3.selectAll('.link').style('fill', function(d){
-                link_color_scale.range(['#fff', d.target.color]);
-                //return link_color_scale(d.target.impurity);
-                return '#eee';
-            });
+    d3.selectAll('.link').style('fill', '#eee');
 }
 
 function click(d) {

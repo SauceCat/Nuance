@@ -275,7 +275,7 @@ def generate_simple_tree(tree_title, tree_model, X, target_names,
 			'tree': json.dumps(final_tree), 'rule': json.dumps(tree_rules_clean),
 			'num_node': tree_info['tree_model'].tree_.capacity,
 			'tree_depth': tree_info['tree_model'].tree_.max_depth,
-			'width': width, 'height': height
+			'width': width, 'height': height, 'n_classes': tree_info['tree_model'].n_classes_
 		}
 		fh.write(template.render(render_result))
 		print('The output is in simple_tree_output/simple_tree_%s.html. Enjoy!' %(tree_title))

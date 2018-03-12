@@ -8,7 +8,6 @@
 }
 
 .node circle {
-	fill: #fff;
 	stroke-width: 3px;
 }
 
@@ -30,21 +29,22 @@
 <script>
 
 var margin = {top: 50, right: 100, bottom: 150, left: 50};
-var tree_depth = {{ tree_depth|safe }};
+
+// collect all inputs
+var tree_depth = {{ tree_depth }};
+var rules = {{ rule|safe }};
+var num_node = {{ num_node }};
+var root = {{ tree|safe }};
 var width = {{ width }}, height = {{ height }};
+var n_classes = {{ n_classes }};
+
+// calculate tree gap
 var tree_gap = (width - margin['left'] - margin['right']) * 1.0 / tree_depth;
 
-var i = 0,
-duration = 750,
-root;
-
-var rules = {{ rule|safe }};
-var num_node = {{ num_node|safe }};
-var tree_depth = {{ tree_depth|safe }};
-
+// generate tree layout (horizonal)
 var tree = d3.layout.tree().size([height, width]);
 var diagonal = d3.svg.diagonal()
-		.projection(function(d){
+        .projection(function(d){
 			return [d.y, d.x];
 		});
 
@@ -54,13 +54,16 @@ var svg = d3.select('body').append('svg')
 		.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-root = {{ tree|safe }};
+// color scale based on node impurity
 var node_color_scale = d3.scale.linear()
-    .domain([root['impurity'], 0.])
+    .domain([1.0 / n_classes + 0.1, 0.])
     .clamp(true);
 
+var i = 0, duration = 750;
 root.x0 = height / 2;
 root.y0 = 0;
+
+// update tree
 update(root);
 
 
@@ -92,9 +95,11 @@ function update(source) {
     		.on('mouseover', mouseover)
     		.on('mouseout', mouseout);
 
+    // draw tree nodes
     nodeEnter.append('circle')
     		.attr('r', 1e-6)
     		.style('fill', function(d) {
+                // d.color is the target color
     			node_color_scale.range(['#fff', d.color]);
     			return node_color_scale(d.impurity);
     		})
@@ -109,14 +114,21 @@ function update(source) {
     				recurse(d, d.color);
     			}
     		})
+            // when mouseout, recover everything
     		.on('mouseout', function(d) {
     			d3.select(this).style('fill', function(d) {
     				node_color_scale.range(['#fff', d.color]);
     				return node_color_scale(d.impurity);
-    			}).attr('r', function(d){return d._children? 20 : 10;});
-    			d3.selectAll('.link').style('stroke-width', '2').style('stroke', '#ccc');
+    			}).attr('r', function(d){
+                    // when the node is collapesd, increase the size
+                    return d._children? 20 : 10;
+                });
+    			d3.selectAll('.link')
+                    .style('stroke-width', '2')
+                    .style('stroke', '#ccc');
     		});
 
+    // add text on tree nodes
     var text = nodeEnter.append('text')
     		.attr('x', 13)
     		.attr('dy', '-0.5em');
@@ -143,6 +155,7 @@ function update(source) {
 
     nodeEnter.select('text').style('fill-opacity', 0);
 
+    // transform tree nodes to their initial positions
     var nodeUpdate = node.transition()
     		.duration(duration)
     		.attr('transform', function(d) {
@@ -171,6 +184,7 @@ function update(source) {
     		})
     		.remove();
 
+    // hide nodes and texts
     nodeExit.select('circle').attr('r', 1e-6);
     nodeExit.select('text').style('fill-opacity', 0);
 
@@ -208,11 +222,11 @@ function update(source) {
     });
 }
 
+// recursively color the links when hovering on a tree node
 function recurse(d, color) {
 	d3.selectAll('.link').each(function(l) {
 		if(l.target === d) {
-			d3.select(this).style('stroke-width', 4)
-					.style('stroke', color);
+			d3.select(this).style('stroke-width', 4).style('stroke', color);
 		}
 	});
 	if(d.parent) {
@@ -221,12 +235,12 @@ function recurse(d, color) {
 }
 
 function mouseover(d) {
+    // if this node has no children nodes
 	if(!d.children) {
 		var rule = rules[d.self];
-		console.log(rule);
 		var append = ['Predict: ' + d.predict, 'Impurity: ' + d.impurity, ''];
 		rule = append.concat(rule);
-		console.log(rule);
+
 		var len = rule.length;
 		var info = d3.select(this).append('g').attr('class', 'hover');
 		var y0 = 35;
@@ -256,6 +270,7 @@ function mouseover(d) {
 					});
 		}
 
+        // draw the box
 		var bbox = info.node().getBBox();
 		var padding = 10;
 		var rect = d3.select(this).insert('rect', 'g')
