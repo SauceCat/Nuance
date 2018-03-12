@@ -29,6 +29,7 @@ Take **simple_tree** as an example:
     ```
     
 ## List of ideas
-1. [**simple_tree**](https://github.com/SauceCat/Nuance/tree/master/tree/simple_tree): visualize a sklearn Decision Tree
-    <img src="https://github.com/SauceCat/Nuance/blob/master/tree/simple_tree/simple_tree.gif" />      
-2. To be continued ...
+1. **simple tree**: visualize a sklearn Decision Tree  
+    <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/simple_tree.gif" />      
+2. **sankey tree**: visualize a sklearn Decision Tree  
+    <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/sankey_tree.gif" />  
