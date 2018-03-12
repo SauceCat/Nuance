@@ -122,6 +122,7 @@ def _parse_tree(node_id, parent, pos, tree_info):
 	node['value'] = [int(v) for v in tree_model.tree_.value[node_id][0]]
 	node['predict'] = target_names[np.argmax(node['value'])]
 	node['color'] = tree_info['target_colors'][np.argmax(node['value'])]
+	node['pos'] = pos
 
 	if tree_model.tree_.children_left[node_id] != -1 or tree_model.tree_.children_right[node_id] != -1:
 		node['children'] = []
@@ -279,3 +280,60 @@ def generate_simple_tree(tree_title, tree_model, X, target_names,
 		}
 		fh.write(template.render(render_result))
 		print('The output is in simple_tree_output/simple_tree_%s.html. Enjoy!' %(tree_title))
+
+
+def generate_sankey_tree(tree_title, tree_model, X, target_names,
+						 target_colors=None, color_map=None, width=None, height=None):
+	'''
+	visualize a sklearn Decision Tree Classifier
+
+	:param tree_title: string
+		name of the tree
+	:param tree_model: a fitted sklearn Decision Tree Classifier
+	:param X: pandas DataFrame
+		dataset model was fitted on
+	:param target_names: list
+		list of names for targets
+	:param target_colors: list, default=None
+		list of colors for targets
+	:param color_map: string, default=None
+		matplotlib color map name, like 'Vega20'
+	:param width: int
+		width of the html page
+	:param height: int
+		height of the html page
+	'''
+
+	# get tree information
+	tree_info = _get_tree_info(X, tree_model, target_names, target_colors, tree_title, color_map)
+
+	# get the tree structure
+	final_tree = _parse_tree(0, "null", "null", tree_info)
+
+	# extract tree rules
+	tree_rules = {}
+	tree_rules = _extract_rules(0, "null", "null", tree_rules, tree_info)
+
+	# clean up rules
+	tree_rules_clean = _clean_rules(tree_rules, tree_info)
+
+	# get template
+	temp = open('src/sankey_tree_template.html').read()
+	template = jinja2.Template(temp)
+
+	# create the output root if it is not exits
+	if not os.path.exists('sankey_tree_output'):
+		os.mkdir('sankey_tree_output')
+
+	# generate output html
+	with open('sankey_tree_output/sankey_tree_%s.html' %(tree_title), 'wb') as fh:
+		render_result = {
+			'tree': json.dumps(final_tree), 'rule': json.dumps(tree_rules_clean),
+			'num_node': tree_info['tree_model'].tree_.capacity,
+			'tree_depth': tree_info['tree_model'].tree_.max_depth,
+			'width': width, 'height': height, 'target_colors': tree_info['target_colors'], 
+			'max_samples': np.max(tree_info['tree_model'].tree_.n_node_samples), 
+			'min_samples': np.min(tree_info['tree_model'].tree_.n_node_samples), 
+		}
+		fh.write(template.render(render_result))
+		print('The output is in sankey_tree_output/sankey_tree_%s.html. Enjoy!' %(tree_title))
