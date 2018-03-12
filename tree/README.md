@@ -1,7 +1,8 @@
 ## Visualize a sklearn Decision Tree Classifier
-- simple tree
+- simple tree   
   <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/simple_tree.gif" />    
-- sankey tree
+- sankey tree  
+  <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/sankey_tree.gif" />      
 
 ## How to use?
 Take **simple_tree** as an example:
