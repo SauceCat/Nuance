@@ -39,7 +39,6 @@
 
 
 <script src="https://d3js.org/d3.v3.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
   // include sankey from here
 d3.sankey = function() {
@@ -336,10 +335,15 @@ d3.sankey = function() {
 };
 </script>
 <script>
- 
+
+var data = {{ data|safe }};
+var link_color_type = '{{ link_color_type }}';
+var link_color = '{{ link_color }}';
+var width = {{ width }}, height = {{ height }};
+
 var margin = {top: 50, right: 200, bottom: 100, left: 0},
-    width = 1650 - margin.left - margin.right,
-    height = 900 - margin.top - margin.bottom;
+    width = width - margin.left - margin.right,
+    height = height - margin.top - margin.bottom;
 
 // Set the sankey diagram properties
 var sankey = d3.sankey()
@@ -348,14 +352,11 @@ var sankey = d3.sankey()
     .size([width, height]);
  
 var path = sankey.link();
-
-var data = {{ data|safe }};
 update_sankey(data);
-
 
 function update_sankey(data){
   // remember deep copy here
-  var graph = $.extend(true, {}, data);
+  var graph = data;
 
   // append the svg canvas to the page
   d3.select('#chart').select('svg').remove();
@@ -398,14 +399,14 @@ function update_sankey(data){
     .attr("offset", "0%")
     .attr("stop-color", function(d) {
       return nodeColor((+d.source.x <= +d.target.x) ?
-        d.target : d.source);
+        d.source : d.target);
     });
 
   grads.append("stop")
     .attr("offset", "100%")
     .attr("stop-color", function(d) {
       return nodeColor((+d.source.x > +d.target.x) ?
-        d.target : d.source)
+        d.source : d.target)
     });
 
   // add in the links
@@ -416,7 +417,10 @@ function update_sankey(data){
     .attr("d", path)
     .style("fill", "none")
     .style("stroke", function(d) {
-      return d.source.color;
+      if(link_color_type=="source") return d.source.color;
+      else if(link_color_type=="target") return d.target.color;
+      else if(link_color_type=="both") return "url(#" + getGradID(d) + ")";
+      else return link_color;
     })
     .style("stroke-opacity", "0.3")
     .on("mouseover", function() {
@@ -469,7 +473,7 @@ function update_sankey(data){
 
 // define utility functions
 function getGradID(d) {
-  return "linkGrad-" + d.target.name.replace(/ /g, "") + "-" + d.source.name.replace(/ /g, "");
+  return "linkGrad-" + d.source.name.replace(/ /g, "") + "-" + d.target.name.replace(/ /g, "");
 }
 
 function nodeColor(d) {

@@ -39,7 +39,6 @@
 
 
 <script src="https://d3js.org/d3.v3.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
   // include sankey from here
 d3.sankey = function() {
@@ -336,10 +335,15 @@ d3.sankey = function() {
 };
 </script>
 <script>
- 
+
+var data = {"nodes": [{"color": "#ff7f0e", "name": "Pclass: 3"}, {"color": "#ff7f0e", "name": "Pclass: 2"}, {"color": "#ff7f0e", "name": "Pclass: 1"}, {"color": "#1f77b4", "name": "Embarked: unknown"}, {"color": "#ffbb78", "name": "Sex: male"}, {"color": "#98df8a", "name": "SibSp: 5"}, {"color": "#98df8a", "name": "SibSp: 4"}, {"color": "#98df8a", "name": "SibSp: 3"}, {"color": "#98df8a", "name": "SibSp: 2"}, {"color": "#98df8a", "name": "SibSp: 1"}, {"color": "#98df8a", "name": "SibSp: 0"}, {"color": "#98df8a", "name": "SibSp: 8"}, {"color": "#2ca02c", "name": "Survived: 1"}, {"color": "#2ca02c", "name": "Survived: 0"}, {"color": "#1f77b4", "name": "Embarked: C"}, {"color": "#aec7e8", "name": "Parch: 2"}, {"color": "#aec7e8", "name": "Parch: 3"}, {"color": "#aec7e8", "name": "Parch: 0"}, {"color": "#aec7e8", "name": "Parch: 1"}, {"color": "#aec7e8", "name": "Parch: 6"}, {"color": "#ffbb78", "name": "Sex: female"}, {"color": "#aec7e8", "name": "Parch: 4"}, {"color": "#aec7e8", "name": "Parch: 5"}, {"color": "#1f77b4", "name": "Embarked: Q"}, {"color": "#1f77b4", "name": "Embarked: S"}], "links": [{"source": "Survived: 0", "target": "Pclass: 1", "value": "80"}, {"source": "Survived: 0", "target": "Pclass: 2", "value": "97"}, {"source": "Survived: 0", "target": "Pclass: 3", "value": "372"}, {"source": "Survived: 1", "target": "Pclass: 1", "value": "136"}, {"source": "Survived: 1", "target": "Pclass: 2", "value": "87"}, {"source": "Survived: 1", "target": "Pclass: 3", "value": "119"}, {"source": "Pclass: 1", "target": "Sex: female", "value": "94"}, {"source": "Pclass: 1", "target": "Sex: male", "value": "122"}, {"source": "Pclass: 2", "target": "Sex: female", "value": "76"}, {"source": "Pclass: 2", "target": "Sex: male", "value": "108"}, {"source": "Pclass: 3", "target": "Sex: female", "value": "144"}, {"source": "Pclass: 3", "target": "Sex: male", "value": "347"}, {"source": "Sex: female", "target": "SibSp: 0", "value": "174"}, {"source": "Sex: female", "target": "SibSp: 1", "value": "106"}, {"source": "Sex: female", "target": "SibSp: 2", "value": "13"}, {"source": "Sex: female", "target": "SibSp: 3", "value": "11"}, {"source": "Sex: female", "target": "SibSp: 4", "value": "6"}, {"source": "Sex: female", "target": "SibSp: 5", "value": "1"}, {"source": "Sex: female", "target": "SibSp: 8", "value": "3"}, {"source": "Sex: male", "target": "SibSp: 0", "value": "434"}, {"source": "Sex: male", "target": "SibSp: 1", "value": "103"}, {"source": "Sex: male", "target": "SibSp: 2", "value": "15"}, {"source": "Sex: male", "target": "SibSp: 3", "value": "5"}, {"source": "Sex: male", "target": "SibSp: 4", "value": "12"}, {"source": "Sex: male", "target": "SibSp: 5", "value": "4"}, {"source": "Sex: male", "target": "SibSp: 8", "value": "4"}, {"source": "SibSp: 0", "target": "Parch: 0", "value": "537"}, {"source": "SibSp: 0", "target": "Parch: 1", "value": "38"}, {"source": "SibSp: 0", "target": "Parch: 2", "value": "29"}, {"source": "SibSp: 0", "target": "Parch: 3", "value": "1"}, {"source": "SibSp: 0", "target": "Parch: 4", "value": "1"}, {"source": "SibSp: 0", "target": "Parch: 5", "value": "2"}, {"source": "SibSp: 1", "target": "Parch: 0", "value": "123"}, {"source": "SibSp: 1", "target": "Parch: 1", "value": "57"}, {"source": "SibSp: 1", "target": "Parch: 2", "value": "19"}, {"source": "SibSp: 1", "target": "Parch: 3", "value": "3"}, {"source": "SibSp: 1", "target": "Parch: 4", "value": "3"}, {"source": "SibSp: 1", "target": "Parch: 5", "value": "3"}, {"source": "SibSp: 1", "target": "Parch: 6", "value": "1"}, {"source": "SibSp: 2", "target": "Parch: 0", "value": "16"}, {"source": "SibSp: 2", "target": "Parch: 1", "value": "7"}, {"source": "SibSp: 2", "target": "Parch: 2", "value": "4"}, {"source": "SibSp: 2", "target": "Parch: 3", "value": "1"}, {"source": "SibSp: 3", "target": "Parch: 0", "value": "2"}, {"source": "SibSp: 3", "target": "Parch: 1", "value": "7"}, {"source": "SibSp: 3", "target": "Parch: 2", "value": "7"}, {"source": "SibSp: 4", "target": "Parch: 1", "value": "9"}, {"source": "SibSp: 4", "target": "Parch: 2", "value": "9"}, {"source": "SibSp: 5", "target": "Parch: 2", "value": "5"}, {"source": "SibSp: 8", "target": "Parch: 2", "value": "7"}, {"source": "Parch: 0", "target": "Embarked: C", "value": "123"}, {"source": "Parch: 0", "target": "Embarked: Q", "value": "69"}, {"source": "Parch: 0", "target": "Embarked: S", "value": "484"}, {"source": "Parch: 0", "target": "Embarked: unknown", "value": "2"}, {"source": "Parch: 1", "target": "Embarked: C", "value": "30"}, {"source": "Parch: 1", "target": "Embarked: Q", "value": "6"}, {"source": "Parch: 1", "target": "Embarked: S", "value": "82"}, {"source": "Parch: 2", "target": "Embarked: C", "value": "14"}, {"source": "Parch: 2", "target": "Embarked: Q", "value": "1"}, {"source": "Parch: 2", "target": "Embarked: S", "value": "65"}, {"source": "Parch: 3", "target": "Embarked: C", "value": "1"}, {"source": "Parch: 3", "target": "Embarked: S", "value": "4"}, {"source": "Parch: 4", "target": "Embarked: S", "value": "4"}, {"source": "Parch: 5", "target": "Embarked: Q", "value": "1"}, {"source": "Parch: 5", "target": "Embarked: S", "value": "4"}, {"source": "Parch: 6", "target": "Embarked: S", "value": "1"}]};
+var link_color_type = 'source';
+var link_color = 'None';
+var width = 1600, height = 900;
+
 var margin = {top: 50, right: 200, bottom: 100, left: 0},
-    width = 1650 - margin.left - margin.right,
-    height = 900 - margin.top - margin.bottom;
+    width = width - margin.left - margin.right,
+    height = height - margin.top - margin.bottom;
 
 // Set the sankey diagram properties
 var sankey = d3.sankey()
@@ -348,14 +352,11 @@ var sankey = d3.sankey()
     .size([width, height]);
  
 var path = sankey.link();
-
-var data = {"nodes": [{"color": "#9edae5", "name": "Embarked_Q"}, {"color": "#9edae5", "name": "Embarked_S"}, {"color": "#98df8a", "name": "Sex_male"}, {"color": "#9edae5", "name": "Embarked_C"}, {"color": "#bcbd22", "name": "Parch_2"}, {"color": "#17becf", "name": "Parch_3"}, {"color": "#7f7f7f", "name": "Parch_0"}, {"color": "#c7c7c7", "name": "Parch_1"}, {"color": "#9edae5", "name": "Parch_6"}, {"color": "#9edae5", "name": "Parch_4"}, {"color": "#dbdb8d", "name": "Parch_5"}, {"color": "#9edae5", "name": "Embarked_unknown"}, {"color": "#d62728", "name": "Sex_female"}, {"color": "#aec7e8", "name": "Survived_1"}, {"color": "#1f77b4", "name": "Survived_0"}, {"color": "#ffbb78", "name": "Pclass_1"}, {"color": "#ff7f0e", "name": "Pclass_3"}, {"color": "#2ca02c", "name": "Pclass_2"}, {"color": "#ff9896", "name": "SibSp_1"}, {"color": "#9467bd", "name": "SibSp_0"}, {"color": "#c5b0d5", "name": "SibSp_3"}, {"color": "#c49c94", "name": "SibSp_2"}, {"color": "#e377c2", "name": "SibSp_5"}, {"color": "#8c564b", "name": "SibSp_4"}, {"color": "#f7b6d2", "name": "SibSp_8"}], "links": [{"source": "Survived_0", "target": "Pclass_1", "value": "80"}, {"source": "Survived_0", "target": "Pclass_2", "value": "97"}, {"source": "Survived_0", "target": "Pclass_3", "value": "372"}, {"source": "Survived_1", "target": "Pclass_1", "value": "136"}, {"source": "Survived_1", "target": "Pclass_2", "value": "87"}, {"source": "Survived_1", "target": "Pclass_3", "value": "119"}, {"source": "Pclass_1", "target": "Sex_female", "value": "94"}, {"source": "Pclass_1", "target": "Sex_male", "value": "122"}, {"source": "Pclass_2", "target": "Sex_female", "value": "76"}, {"source": "Pclass_2", "target": "Sex_male", "value": "108"}, {"source": "Pclass_3", "target": "Sex_female", "value": "144"}, {"source": "Pclass_3", "target": "Sex_male", "value": "347"}, {"source": "Sex_female", "target": "SibSp_0", "value": "174"}, {"source": "Sex_female", "target": "SibSp_1", "value": "106"}, {"source": "Sex_female", "target": "SibSp_2", "value": "13"}, {"source": "Sex_female", "target": "SibSp_3", "value": "11"}, {"source": "Sex_female", "target": "SibSp_4", "value": "6"}, {"source": "Sex_female", "target": "SibSp_5", "value": "1"}, {"source": "Sex_female", "target": "SibSp_8", "value": "3"}, {"source": "Sex_male", "target": "SibSp_0", "value": "434"}, {"source": "Sex_male", "target": "SibSp_1", "value": "103"}, {"source": "Sex_male", "target": "SibSp_2", "value": "15"}, {"source": "Sex_male", "target": "SibSp_3", "value": "5"}, {"source": "Sex_male", "target": "SibSp_4", "value": "12"}, {"source": "Sex_male", "target": "SibSp_5", "value": "4"}, {"source": "Sex_male", "target": "SibSp_8", "value": "4"}, {"source": "SibSp_0", "target": "Parch_0", "value": "537"}, {"source": "SibSp_0", "target": "Parch_1", "value": "38"}, {"source": "SibSp_0", "target": "Parch_2", "value": "29"}, {"source": "SibSp_0", "target": "Parch_3", "value": "1"}, {"source": "SibSp_0", "target": "Parch_4", "value": "1"}, {"source": "SibSp_0", "target": "Parch_5", "value": "2"}, {"source": "SibSp_1", "target": "Parch_0", "value": "123"}, {"source": "SibSp_1", "target": "Parch_1", "value": "57"}, {"source": "SibSp_1", "target": "Parch_2", "value": "19"}, {"source": "SibSp_1", "target": "Parch_3", "value": "3"}, {"source": "SibSp_1", "target": "Parch_4", "value": "3"}, {"source": "SibSp_1", "target": "Parch_5", "value": "3"}, {"source": "SibSp_1", "target": "Parch_6", "value": "1"}, {"source": "SibSp_2", "target": "Parch_0", "value": "16"}, {"source": "SibSp_2", "target": "Parch_1", "value": "7"}, {"source": "SibSp_2", "target": "Parch_2", "value": "4"}, {"source": "SibSp_2", "target": "Parch_3", "value": "1"}, {"source": "SibSp_3", "target": "Parch_0", "value": "2"}, {"source": "SibSp_3", "target": "Parch_1", "value": "7"}, {"source": "SibSp_3", "target": "Parch_2", "value": "7"}, {"source": "SibSp_4", "target": "Parch_1", "value": "9"}, {"source": "SibSp_4", "target": "Parch_2", "value": "9"}, {"source": "SibSp_5", "target": "Parch_2", "value": "5"}, {"source": "SibSp_8", "target": "Parch_2", "value": "7"}, {"source": "Parch_0", "target": "Embarked_C", "value": "123"}, {"source": "Parch_0", "target": "Embarked_Q", "value": "69"}, {"source": "Parch_0", "target": "Embarked_S", "value": "484"}, {"source": "Parch_0", "target": "Embarked_unknown", "value": "2"}, {"source": "Parch_1", "target": "Embarked_C", "value": "30"}, {"source": "Parch_1", "target": "Embarked_Q", "value": "6"}, {"source": "Parch_1", "target": "Embarked_S", "value": "82"}, {"source": "Parch_2", "target": "Embarked_C", "value": "14"}, {"source": "Parch_2", "target": "Embarked_Q", "value": "1"}, {"source": "Parch_2", "target": "Embarked_S", "value": "65"}, {"source": "Parch_3", "target": "Embarked_C", "value": "1"}, {"source": "Parch_3", "target": "Embarked_S", "value": "4"}, {"source": "Parch_4", "target": "Embarked_S", "value": "4"}, {"source": "Parch_5", "target": "Embarked_Q", "value": "1"}, {"source": "Parch_5", "target": "Embarked_S", "value": "4"}, {"source": "Parch_6", "target": "Embarked_S", "value": "1"}]};
 update_sankey(data);
-
 
 function update_sankey(data){
   // remember deep copy here
-  var graph = $.extend(true, {}, data);
+  var graph = data;
 
   // append the svg canvas to the page
   d3.select('#chart').select('svg').remove();
@@ -398,14 +399,14 @@ function update_sankey(data){
     .attr("offset", "0%")
     .attr("stop-color", function(d) {
       return nodeColor((+d.source.x <= +d.target.x) ?
-        d.target : d.source);
+        d.source : d.target);
     });
 
   grads.append("stop")
     .attr("offset", "100%")
     .attr("stop-color", function(d) {
       return nodeColor((+d.source.x > +d.target.x) ?
-        d.target : d.source)
+        d.source : d.target)
     });
 
   // add in the links
@@ -416,7 +417,10 @@ function update_sankey(data){
     .attr("d", path)
     .style("fill", "none")
     .style("stroke", function(d) {
-      return d.source.color;
+      if(link_color_type=="source") return d.source.color;
+      else if(link_color_type=="target") return d.target.color;
+      else if(link_color_type=="both") return "url(#" + getGradID(d) + ")";
+      else return link_color;
     })
     .style("stroke-opacity", "0.3")
     .on("mouseover", function() {
@@ -469,7 +473,7 @@ function update_sankey(data){
 
 // define utility functions
 function getGradID(d) {
-  return "linkGrad-" + d.target.name.replace(/ /g, "") + "-" + d.source.name.replace(/ /g, "");
+  return "linkGrad-" + d.source.name.replace(/ /g, "") + "-" + d.target.name.replace(/ /g, "");
 }
 
 function nodeColor(d) {
