@@ -14,3 +14,14 @@ Please check instructions in the corresponding folder
     <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/simple_tree.gif" />      
 2. **sankey tree**: [visualize a sklearn Decision Tree](https://github.com/SauceCat/Nuance/blob/master/tree)
     <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/sankey_tree.gif" />  
+3. **sankey flow**: [visualize a sankey flow](https://github.com/SauceCat/Nuance/tree/master/sankey)
+    <table>
+    <tr>
+        <td><img src="https://github.com/SauceCat/Nuance/blob/master/sankey/images/sankey_flow_tab20.PNG" /></td>
+        <td><img src="https://github.com/SauceCat/Nuance/blob/master/sankey/images/sankey_flow_same.PNG" /></td>
+    </tr>
+    <tr>
+        <td><img src="https://github.com/SauceCat/Nuance/blob/master/sankey/images/sankey_flow_val.PNG" /></td>
+        <td><img src="https://github.com/SauceCat/Nuance/blob/master/sankey/images/sankey_flow_col_val.PNG" /></td>
+    </tr>
+    </table>
