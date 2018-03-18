@@ -12,8 +12,10 @@ Please check instructions in the corresponding folder
 ## List of ideas
 1. **simple tree**: [visualize a sklearn Decision Tree](https://github.com/SauceCat/Nuance/blob/master/tree)
     <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/simple_tree.gif" />      
+    <br>
 2. **sankey tree**: [visualize a sklearn Decision Tree](https://github.com/SauceCat/Nuance/blob/master/tree)
     <img src="https://github.com/SauceCat/Nuance/blob/master/tree/image/sankey_tree.gif" />  
+    <br>
 3. **sankey flow**: [visualize a sankey flow](https://github.com/SauceCat/Nuance/tree/master/sankey)
     <table>
     <tr>
