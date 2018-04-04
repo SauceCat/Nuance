@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Simple Bar chart</title>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+        
+        .bar {
+            fill: #5f89ad;
+        }
+
+        .bar2 {
+            fill: #5f89ad;
+        }
+        
+        .axis {
+            font-size: 13px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            display: none;
+        }
+        
+        .label {
+            font-size: 13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="graphic"></div>
+
+    <script>
+        var bar_left_data = {{ bar_left_data|safe }},
+            bar_right_data = {{ bar_right_data|safe }},
+            line_data = {{ line_data|safe }};
+
+        //set up svg using margin conventions - we'll need plenty of room on the left for labels
+        var margin = {
+            top: 15,
+            right: 25,
+            bottom: 15,
+            left: 60
+        };
+
+        var width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var svg = d3.select("#graphic").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var max_bar_width = 300;
+        var bar_height = 30;
+
+        var x = d3.scale.linear()
+            .range([0, max_bar_width])
+            .domain([0, d3.max(data, function (d) {
+                return d.value;
+            })]);
+
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([data.length * bar_height, 0], .1)
+            .domain(data.map(function (d) {
+                return d.name;
+            }));
+
+        //make y axis to show bar names
+        /*
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            //no tick marks
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)*/
+
+        var bg_bars = svg.selectAll(".bg_bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        bg_bars.append("rect")
+            .attr("class", "bg_bar")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", max_bar_width)
+            .style("fill", '#cccccc');
+
+        var bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        //append rects
+
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", function (d) {
+                return x(d.value);
+            });
+
+        //add a value label to the right of each bar
+        bars.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", 5)
+            .text(function (d) {
+                return d.name;
+            })
+            .style('fill', '#fff');
+
+
+                var bg_bars = svg.selectAll(".bg_bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        var middle_gap = 300;
+        var bg_bars2 = svg.selectAll(".bg_bar2")
+            .data(data)
+            .enter()
+            .append("g")
+
+        bg_bars2.append("rect")
+            .attr("class", "bg_bar2")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", max_bar_width + middle_gap)
+            .attr("width", max_bar_width)
+            .style("fill", '#cccccc');
+
+        var bars2 = svg.selectAll(".bar2")
+            .data(data)
+            .enter()
+            .append("g")
+
+        //append rects
+
+        bars2.append("rect")
+            .attr("class", "bar2")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", max_bar_width + middle_gap)
+            .attr("width", function (d) {
+                return x(d.value);
+            });
+
+        //add a value label to the right of each bar
+        bars2.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", max_bar_width + middle_gap + 5)
+            .text(function (d) {
+                return d.name;
+            })
+            .style('fill', '#fff');
+
+
+        // add lines
+        svg.append('line')
+        .style('stroke', 'black')
+        .attr('x1', max_bar_width)
+        .attr('y1', y('Bananas') + y.rangeBand() / 2)
+        .attr('x2', max_bar_width + middle_gap)
+        .attr('y2', y('Pears') + y.rangeBand() / 2)
+        .style('stroke', 'red');
+
+        /*
+
+        bars.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", function (d) {
+                return x(d.value) + 3;
+            })
+            .text(function (d) {
+                return d.value;
+            });*/
+        
+    </script>
+
+</body>
+
+</html>

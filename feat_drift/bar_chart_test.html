@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Simple Bar chart</title>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+        
+        .bar {
+            fill: #5f89ad;
+        }
+
+        .bar2 {
+            fill: #5f89ad;
+        }
+        
+        .axis {
+            font-size: 13px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            display: none;
+        }
+        
+        .label {
+            font-size: 13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="graphic"></div>
+
+    <script>
+        var bar_left_data = [{'bar_color': '#d53e4f', 'feat_name': 'feat_70', 'relative_imp_x': 1.0, 'feat_rank_x': 1.0}, {'bar_color': '#d53e4f', 'feat_name': 'feat_27', 'relative_imp_x': 0.406, 'feat_rank_x': 2.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_67', 'relative_imp_x': 0.377, 'feat_rank_x': 3.0}, {'bar_color': '#d53e4f', 'feat_name': 'feat_43', 'relative_imp_x': 0.369, 'feat_rank_x': 4.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_79', 'relative_imp_x': 0.324, 'feat_rank_x': 5.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_4', 'relative_imp_x': 0.263, 'feat_rank_x': 6.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_16', 'relative_imp_x': 0.255, 'feat_rank_x': 7.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_72', 'relative_imp_x': 0.224, 'feat_rank_x': 8.0}, {'bar_color': '#969696', 'feat_name': 'feat_75', 'relative_imp_x': 0.152, 'feat_rank_x': 9.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_61', 'relative_imp_x': 0.152, 'feat_rank_x': 10.0}, {'bar_color': '#969696', 'feat_name': 'feat_77', 'relative_imp_x': 0.141, 'feat_rank_x': 11.0}, {'bar_color': '#969696', 'feat_name': 'feat_12', 'relative_imp_x': 0.137, 'feat_rank_x': 12.0}, {'bar_color': '#969696', 'feat_name': 'feat_49', 'relative_imp_x': 0.128, 'feat_rank_x': 13.0}, {'bar_color': '#d53e4f', 'feat_name': 'feat_29', 'relative_imp_x': 0.126, 'feat_rank_x': 14.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_41', 'relative_imp_x': 0.122, 'feat_rank_x': 15.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_48', 'relative_imp_x': 0.118, 'feat_rank_x': 16.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_3', 'relative_imp_x': 0.113, 'feat_rank_x': 17.0}, {'bar_color': '#abdda4', 'feat_name': 'feat_45', 'relative_imp_x': 0.107, 'feat_rank_x': 18.0}, {'bar_color': '#969696', 'feat_name': 'feat_47', 'relative_imp_x': 0.106, 'feat_rank_x': 19.0}, {'bar_color': '#969696', 'feat_name': 'feat_17', 'relative_imp_x': 0.105, 'feat_rank_x': 20.0}],
+            bar_right_data = [{'feat_rank_y': 1.0, 'feat_name': 'feat_72', 'bar_color': '#abdda4', 'relative_imp_y': 1.0}, {'feat_rank_y': 2.0, 'feat_name': 'feat_70', 'bar_color': '#d53e4f', 'relative_imp_y': 0.852}, {'feat_rank_y': 3.0, 'feat_name': 'feat_67', 'bar_color': '#abdda4', 'relative_imp_y': 0.717}, {'feat_rank_y': 4.0, 'feat_name': 'feat_16', 'bar_color': '#abdda4', 'relative_imp_y': 0.694}, {'feat_rank_y': 5.0, 'feat_name': 'feat_79', 'bar_color': '#abdda4', 'relative_imp_y': 0.609}, {'feat_rank_y': 6.0, 'feat_name': 'feat_4', 'bar_color': '#abdda4', 'relative_imp_y': 0.537}, {'feat_rank_y': 7.0, 'feat_name': 'feat_43', 'bar_color': '#d53e4f', 'relative_imp_y': 0.429}, {'feat_rank_y': 8.0, 'feat_name': 'feat_61', 'bar_color': '#abdda4', 'relative_imp_y': 0.344}, {'feat_rank_y': 9.0, 'feat_name': 'feat_3', 'bar_color': '#abdda4', 'relative_imp_y': 0.231}, {'feat_rank_y': 10.0, 'feat_name': 'feat_41', 'bar_color': '#abdda4', 'relative_imp_y': 0.197}, {'feat_rank_y': 11.0, 'feat_name': 'feat_48', 'bar_color': '#abdda4', 'relative_imp_y': 0.187}, {'feat_rank_y': 12.0, 'feat_name': 'feat_45', 'bar_color': '#abdda4', 'relative_imp_y': 0.185}, {'feat_rank_y': 13.0, 'feat_name': 'feat_71', 'bar_color': '#3288bd', 'relative_imp_y': 0.185}, {'feat_rank_y': 14.0, 'feat_name': 'feat_62', 'bar_color': '#3288bd', 'relative_imp_y': 0.181}, {'feat_rank_y': 15.0, 'feat_name': 'feat_29', 'bar_color': '#d53e4f', 'relative_imp_y': 0.17}, {'feat_rank_y': 16.0, 'feat_name': 'feat_60', 'bar_color': '#3288bd', 'relative_imp_y': 0.168}, {'feat_rank_y': 17.0, 'feat_name': 'feat_21', 'bar_color': '#3288bd', 'relative_imp_y': 0.145}, {'feat_rank_y': 18.0, 'feat_name': 'feat_27', 'bar_color': '#d53e4f', 'relative_imp_y': 0.137}, {'feat_rank_y': 19.0, 'feat_name': 'feat_11', 'bar_color': '#3288bd', 'relative_imp_y': 0.136}, {'feat_rank_y': 20.0, 'feat_name': 'feat_46', 'bar_color': '#3288bd', 'relative_imp_y': 0.133}],
+            line_data = [{'feat_rank_y': 2.0, 'feat_name': 'feat_70', 'bar_color': '#d53e4f', 'feat_rank_x': 1.0}, {'feat_rank_y': 18.0, 'feat_name': 'feat_27', 'bar_color': '#d53e4f', 'feat_rank_x': 2.0}, {'feat_rank_y': 3.0, 'feat_name': 'feat_67', 'bar_color': '#abdda4', 'feat_rank_x': 3.0}, {'feat_rank_y': 7.0, 'feat_name': 'feat_43', 'bar_color': '#d53e4f', 'feat_rank_x': 4.0}, {'feat_rank_y': 5.0, 'feat_name': 'feat_79', 'bar_color': '#abdda4', 'feat_rank_x': 5.0}, {'feat_rank_y': 6.0, 'feat_name': 'feat_4', 'bar_color': '#abdda4', 'feat_rank_x': 6.0}, {'feat_rank_y': 4.0, 'feat_name': 'feat_16', 'bar_color': '#abdda4', 'feat_rank_x': 7.0}, {'feat_rank_y': 1.0, 'feat_name': 'feat_72', 'bar_color': '#abdda4', 'feat_rank_x': 8.0}, {'feat_rank_y': 8.0, 'feat_name': 'feat_61', 'bar_color': '#abdda4', 'feat_rank_x': 10.0}, {'feat_rank_y': 15.0, 'feat_name': 'feat_29', 'bar_color': '#d53e4f', 'feat_rank_x': 14.0}, {'feat_rank_y': 10.0, 'feat_name': 'feat_41', 'bar_color': '#abdda4', 'feat_rank_x': 15.0}, {'feat_rank_y': 11.0, 'feat_name': 'feat_48', 'bar_color': '#abdda4', 'feat_rank_x': 16.0}, {'feat_rank_y': 9.0, 'feat_name': 'feat_3', 'bar_color': '#abdda4', 'feat_rank_x': 17.0}, {'feat_rank_y': 12.0, 'feat_name': 'feat_45', 'bar_color': '#abdda4', 'feat_rank_x': 18.0}];
+
+        //set up svg using margin conventions - we'll need plenty of room on the left for labels
+        var margin = {
+            top: 15,
+            right: 25,
+            bottom: 15,
+            left: 60
+        };
+
+        var width = 960 - margin.left - margin.right,
+            height = 1000 - margin.top - margin.bottom;
+
+        var svg = d3.select("#graphic").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var max_bar_width = 300;
+        var bar_height = 30;
+
+        var x = d3.scale.linear()
+            .range([0, max_bar_width])
+            .domain([0, 1.0]);
+
+        var y_left = d3.scale.ordinal()
+                .rangeRoundBands([0, bar_left_data.length * bar_height], .1)
+                .domain(bar_left_data.map(function (d) {
+                    return d.feat_name;
+                }));
+
+        var y_right = d3.scale.ordinal()
+                .rangeRoundBands([0, bar_right_data.length * bar_height], .1)
+                .domain(bar_right_data.map(function (d) {
+                    return d.feat_name;
+                }));
+
+
+        //make y axis to show bar names
+        /*
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            //no tick marks
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)*/
+
+        var middle_gap = 300;
+
+        updateBar('left', bar_left_data);
+        updateBar('right', bar_right_data);
+        updateLines();
+
+
+        function updateBar(pos, bar_data) {
+
+            var bar_x = 0,
+                bg_bar_class = 'bg_bar_left',
+                bar_class = 'bar_left',
+                y = y_left;
+
+            if (pos == 'right') {
+                bar_x = max_bar_width + middle_gap;
+                bg_bar_class = 'bg_bar_right',
+                bar_class = 'bar_right', 
+                y = y_right;
+            }
+
+
+            var bg_bars = svg.selectAll("." + bg_bar_class)
+                .data(bar_data)
+                .enter()
+                .append("g")
+
+            bg_bars.append("rect")
+                .attr("class", bg_bar_class)
+                .attr("y", function (d) {
+                    return y(d.feat_name);
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", bar_x)
+                .attr("width", max_bar_width)
+                .style("fill", '#ddd');
+
+            var bars = svg.selectAll("." + bar_class)
+                .data(bar_data)
+                .enter()
+                .append("g");
+
+            //append rects
+            bars.append("rect")
+                .attr("class", bar_class)
+                .attr("y", function (d) {
+                    return y(d.feat_name);
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", bar_x)
+                .attr("width", function (d) {
+                    if (pos == 'left'){
+                        return x(d.relative_imp_x);
+                    }else {
+                        return x(d.relative_imp_y);
+                    }
+                })
+                .style('fill', function (d){
+                    return d.bar_color;
+                });
+
+            //add a value label to the right of each bar
+            bars.append("text")
+                .attr("class", "label")
+                //y position of the label is halfway down the bar
+                .attr("y", function (d) {
+                    return y(d.feat_name) + y.rangeBand() / 2 + 4;
+                })
+                //x position is 3 pixels to the right of the bar
+                .attr("x", bar_x+5)
+                .text(function (d) {
+                    return d.feat_name;
+                })
+                .style('fill', '#fff');
+        }
+
+        function updateLines() {
+
+            var lines = svg.selectAll(".lines")
+                .data(line_data)
+                .enter()
+                .append("g");
+
+            lines.append("line")
+                .attr("class", "lines")
+                .attr('x1', max_bar_width)
+                .attr('y1', function (d) {
+                    return y_left(d.feat_name) + y_left.rangeBand() / 2
+                })
+                .attr('x2', max_bar_width + middle_gap)
+                .attr('y2', function (d) {
+                    return y_right(d.feat_name) + y_right.rangeBand() / 2
+                })
+                .style('stroke', function (d) {
+                    return d.bar_color;
+                });
+
+        }
+        
+    </script>
+
+</body>
+
+</html>
