@@ -7,40 +7,37 @@
     <style>
         body {
             font-family: "Arial", sans-serif;
+            margin: 50px 50px 50px 60px;
         }
     </style>
 
 </head>
 
 <body>
-
+    <div>
+    <h1>Feature Drift</h1>
+    <p>Important features drift through two dataset</p>
+    </div>
     <div id="graphic"></div>
 
     <script>
-        var bar_left_data = [{'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_70', 'pos': 'left', 'relative_imp': 1.0}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_27', 'pos': 'left', 'relative_imp': 0.406}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_67', 'pos': 'left', 'relative_imp': 0.377}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_43', 'pos': 'left', 'relative_imp': 0.369}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_79', 'pos': 'left', 'relative_imp': 0.324}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_4', 'pos': 'left', 'relative_imp': 0.263}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_16', 'pos': 'left', 'relative_imp': 0.255}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_72', 'pos': 'left', 'relative_imp': 0.224}, {'bar_mark': '0', 'bar_color': '#969696', 'feat_name': 'feat_75', 'pos': 'left', 'relative_imp': 0.152}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_61', 'pos': 'left', 'relative_imp': 0.152}, {'bar_mark': '0', 'bar_color': '#969696', 'feat_name': 'feat_77', 'pos': 'left', 'relative_imp': 0.141}, {'bar_mark': '0', 'bar_color': '#969696', 'feat_name': 'feat_12', 'pos': 'left', 'relative_imp': 0.137}, {'bar_mark': '0', 'bar_color': '#969696', 'feat_name': 'feat_49', 'pos': 'left', 'relative_imp': 0.128}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_29', 'pos': 'left', 'relative_imp': 0.126}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_41', 'pos': 'left', 'relative_imp': 0.122}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_48', 'pos': 'left', 'relative_imp': 0.118}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_3', 'pos': 'left', 'relative_imp': 0.113}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_45', 'pos': 'left', 'relative_imp': 0.107}, {'bar_mark': '0', 'bar_color': '#969696', 'feat_name': 'feat_47', 'pos': 'left', 'relative_imp': 0.106}, {'bar_mark': '0', 'bar_color': '#969696', 'feat_name': 'feat_17', 'pos': 'left', 'relative_imp': 0.105}],
-            bar_right_data = [{'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_72', 'pos': 'right', 'relative_imp': 1.0}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_70', 'pos': 'right', 'relative_imp': 0.852}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_67', 'pos': 'right', 'relative_imp': 0.717}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_16', 'pos': 'right', 'relative_imp': 0.694}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_79', 'pos': 'right', 'relative_imp': 0.609}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_4', 'pos': 'right', 'relative_imp': 0.537}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_43', 'pos': 'right', 'relative_imp': 0.429}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_61', 'pos': 'right', 'relative_imp': 0.344}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_3', 'pos': 'right', 'relative_imp': 0.231}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_41', 'pos': 'right', 'relative_imp': 0.197}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_48', 'pos': 'right', 'relative_imp': 0.187}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_45', 'pos': 'right', 'relative_imp': 0.185}, {'bar_mark': '0', 'bar_color': '#3288bd', 'feat_name': 'feat_71', 'pos': 'right', 'relative_imp': 0.185}, {'bar_mark': '0', 'bar_color': '#3288bd', 'feat_name': 'feat_62', 'pos': 'right', 'relative_imp': 0.181}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_29', 'pos': 'right', 'relative_imp': 0.17}, {'bar_mark': '0', 'bar_color': '#3288bd', 'feat_name': 'feat_60', 'pos': 'right', 'relative_imp': 0.168}, {'bar_mark': '0', 'bar_color': '#3288bd', 'feat_name': 'feat_21', 'pos': 'right', 'relative_imp': 0.145}, {'bar_mark': '1', 'bar_color': '#d53e4f', 'feat_name': 'feat_27', 'pos': 'right', 'relative_imp': 0.137}, {'bar_mark': '0', 'bar_color': '#3288bd', 'feat_name': 'feat_11', 'pos': 'right', 'relative_imp': 0.136}, {'bar_mark': '0', 'bar_color': '#3288bd', 'feat_name': 'feat_46', 'pos': 'right', 'relative_imp': 0.133}],
-            line_data = [{'bar_color': '#d53e4f', 'feat_name': 'feat_70'}, {'bar_color': '#d53e4f', 'feat_name': 'feat_27'}, {'bar_color': '#abdda4', 'feat_name': 'feat_67'}, {'bar_color': '#d53e4f', 'feat_name': 'feat_43'}, {'bar_color': '#abdda4', 'feat_name': 'feat_79'}, {'bar_color': '#abdda4', 'feat_name': 'feat_4'}, {'bar_color': '#abdda4', 'feat_name': 'feat_16'}, {'bar_color': '#abdda4', 'feat_name': 'feat_72'}, {'bar_color': '#abdda4', 'feat_name': 'feat_61'}, {'bar_color': '#d53e4f', 'feat_name': 'feat_29'}, {'bar_color': '#abdda4', 'feat_name': 'feat_41'}, {'bar_color': '#abdda4', 'feat_name': 'feat_48'}, {'bar_color': '#abdda4', 'feat_name': 'feat_3'}, {'bar_color': '#abdda4', 'feat_name': 'feat_45'}];
+        var bar_left_data = [{'relative_imp': 1.0, 'feat_name': 'feat_70', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.406, 'feat_name': 'feat_27', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.377, 'feat_name': 'feat_67', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.369, 'feat_name': 'feat_43', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.324, 'feat_name': 'feat_79', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.263, 'feat_name': 'feat_4', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.255, 'feat_name': 'feat_16', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.224, 'feat_name': 'feat_72', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.152, 'feat_name': 'feat_75', 'bar_mark': '0', 'pos': 'left', 'bar_color': '#969696', 'font_color': '#525252'}, {'relative_imp': 0.152, 'feat_name': 'feat_61', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.141, 'feat_name': 'feat_77', 'bar_mark': '0', 'pos': 'left', 'bar_color': '#969696', 'font_color': '#525252'}, {'relative_imp': 0.137, 'feat_name': 'feat_12', 'bar_mark': '0', 'pos': 'left', 'bar_color': '#969696', 'font_color': '#525252'}, {'relative_imp': 0.128, 'feat_name': 'feat_49', 'bar_mark': '0', 'pos': 'left', 'bar_color': '#969696', 'font_color': '#525252'}, {'relative_imp': 0.126, 'feat_name': 'feat_29', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.122, 'feat_name': 'feat_41', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.118, 'feat_name': 'feat_48', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.113, 'feat_name': 'feat_3', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.107, 'feat_name': 'feat_45', 'bar_mark': '1', 'pos': 'left', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.106, 'feat_name': 'feat_47', 'bar_mark': '0', 'pos': 'left', 'bar_color': '#969696', 'font_color': '#525252'}, {'relative_imp': 0.105, 'feat_name': 'feat_17', 'bar_mark': '0', 'pos': 'left', 'bar_color': '#969696', 'font_color': '#525252'}],
+            bar_right_data = [{'relative_imp': 1.0, 'feat_name': 'feat_72', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.852, 'feat_name': 'feat_70', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.717, 'feat_name': 'feat_67', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.694, 'feat_name': 'feat_16', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.609, 'feat_name': 'feat_79', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.537, 'feat_name': 'feat_4', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.429, 'feat_name': 'feat_43', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.344, 'feat_name': 'feat_61', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.231, 'feat_name': 'feat_3', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.197, 'feat_name': 'feat_41', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.187, 'feat_name': 'feat_48', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.185, 'feat_name': 'feat_45', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#66c2a5', 'font_color': '#00441b'}, {'relative_imp': 0.185, 'feat_name': 'feat_71', 'bar_mark': '0', 'pos': 'right', 'bar_color': '#74a9cf', 'font_color': '#08306b'}, {'relative_imp': 0.181, 'feat_name': 'feat_62', 'bar_mark': '0', 'pos': 'right', 'bar_color': '#74a9cf', 'font_color': '#08306b'}, {'relative_imp': 0.17, 'feat_name': 'feat_29', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.168, 'feat_name': 'feat_60', 'bar_mark': '0', 'pos': 'right', 'bar_color': '#74a9cf', 'font_color': '#08306b'}, {'relative_imp': 0.145, 'feat_name': 'feat_21', 'bar_mark': '0', 'pos': 'right', 'bar_color': '#74a9cf', 'font_color': '#08306b'}, {'relative_imp': 0.137, 'feat_name': 'feat_27', 'bar_mark': '1', 'pos': 'right', 'bar_color': '#d53e4f', 'font_color': '#67000d'}, {'relative_imp': 0.136, 'feat_name': 'feat_11', 'bar_mark': '0', 'pos': 'right', 'bar_color': '#74a9cf', 'font_color': '#08306b'}, {'relative_imp': 0.133, 'feat_name': 'feat_46', 'bar_mark': '0', 'pos': 'right', 'bar_color': '#74a9cf', 'font_color': '#08306b'}],
+            line_data = [{'bar_color': '#d53e4f', 'feat_name': 'feat_70'}, {'bar_color': '#d53e4f', 'feat_name': 'feat_27'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_67'}, {'bar_color': '#d53e4f', 'feat_name': 'feat_43'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_79'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_4'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_16'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_72'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_61'}, {'bar_color': '#d53e4f', 'feat_name': 'feat_29'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_41'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_48'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_3'}, {'bar_color': '#66c2a5', 'feat_name': 'feat_45'}];
 
         var max_bar_width = 300;
         var bar_height = 30;
         var middle_gap = 300;
         var fontsize = '12px';
 
-        var margin = {
-            top: 50,
-            right: 50,
-            bottom: 50,
-            left: 60
-        };
-
         var width = max_bar_width * 2 + middle_gap,
             height = bar_left_data.length * bar_height * 1.1;
 
         var svg = d3.select("#graphic").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("width", width + 10)
+            .attr("height", height)
+            .append("g");
+            //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var x = d3.scale.linear()
             .range([0, max_bar_width])
@@ -91,7 +88,7 @@
                 .attr("height", y.rangeBand())
                 .attr("x", bar_x)
                 .attr("width", max_bar_width)
-                .style("fill", '#ddd')
+                .style("fill", '#f0f0f0')
                 .on("mouseover", barHover)
                 .on("mouseout", barOut);
 
@@ -125,7 +122,7 @@
                 .text(function (d) {
                     return d.feat_name;
                 })
-                .style('fill', '#fff')
+                .style('fill', function(d) { return d.font_color;})
                 .style('font-size', fontsize);
         }
 
@@ -157,13 +154,8 @@
             d3.selectAll('.bg_bar_' + d.pos).filter(function(o) {
                 return o.feat_name == d.feat_name;
             })
-            .style("stroke", '#000000')
+            .style("stroke", d.bar_color)
             .style("stroke-width", 2);
-
-            d3.selectAll('.bar_' + d.pos).filter(function(o) {
-                return o.feat_name == d.feat_name;
-            })
-            .style("fill", '#000000');
 
             var other_pos = 'right';
             if (d.pos == 'right') other_pos = 'left';
@@ -172,19 +164,13 @@
                 d3.selectAll('.bg_bar_' + other_pos).filter(function(o) {
                     return o.feat_name == d.feat_name;
                 })
-                .style("stroke", '#000000')
+                .style("stroke", d.bar_color)
                 .style("stroke-width", 2);
-
-                d3.selectAll('.bar_' + other_pos).filter(function(o) {
-                    return o.feat_name == d.feat_name;
-                })
-                .style("fill", '#000000');
 
                 d3.selectAll('.lines').filter(function(l) {
                     return l.feat_name == d.feat_name;
                 })
-                .style("stroke", '#000000')
-                .style("stroke-width", 2);
+                .style("stroke-width", 4);
             }
         }
 
@@ -194,13 +180,7 @@
             d3.selectAll('.bg_bar_' + d.pos).filter(function(o) {
                 return o.feat_name == d.feat_name;
             })
-            .style("stroke", null)
-            .style("stroke-width", 0);
-
-            d3.selectAll('.bar_' + d.pos).filter(function(o) {
-                return o.feat_name == d.feat_name;
-            })
-            .style("fill", d.bar_color);
+            .style("stroke", null);
 
             var other_pos = 'right';
             if (d.pos == 'right') other_pos = 'left';
@@ -209,18 +189,11 @@
                 d3.selectAll('.bg_bar_' + other_pos).filter(function(o) {
                     return o.feat_name == d.feat_name;
                 })
-                .style("stroke", null)
-                .style("stroke-width", 0);
-
-                d3.selectAll('.bar_' + other_pos).filter(function(o) {
-                    return o.feat_name == d.feat_name;
-                })
-                .style("fill", d.bar_color);
+                .style("stroke", null);
 
                 d3.selectAll('.lines').filter(function(l) {
                     return l.feat_name == d.feat_name;
                 })
-                .style("stroke", d.bar_color)
                 .style("stroke-width", 1);
             }
         }
