@@ -31,6 +31,6 @@ Please check instructions in the corresponding folder
 4. **feature drift**: [visualize feature drift](https://github.com/SauceCat/Nuance/tree/master/feat_drift)  
     <br>
     <img src="https://github.com/SauceCat/Nuance/blob/master/feat_drift/images/feat_drift.PNG" width="80%" />  
-    <img src="https://github.com/SauceCat/Nuance/blob/master/feat_drift/images/feat_drift.gif" />
+    <img src="https://github.com/SauceCat/Nuance/blob/master/feat_drift/images/feat_drift.gif"/>
     
     
