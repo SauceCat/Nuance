@@ -9,9 +9,7 @@
             font-family: "Arial", sans-serif;
             margin: 60px 50px 50px 100px;
         }
-
     </style>
-
 </head>
 
 <body>
@@ -19,34 +17,37 @@
         <h1>Feature Drift</h1>
         <p>Visualize how important features drift through two datasets.</p>
     </div>
-
     <div id="legend"></div> 
     <div id="graphic"></div>
 
     <script>
-        var bar_left_data = {{ bar_left_data|safe }},
-            bar_right_data = {{ bar_right_data|safe }},
-            line_data = {{ line_data|safe }}, 
-            legend_data = {{ legend_data|safe }},
-            max_bar_width = {{ max_bar_width }},
-            bar_height = {{ bar_height }},
-            middle_gap = {{ middle_gap }},
-            fontsize = {{ fontsize }}, 
-            ds_name1 = '{{ ds_name1 }}', 
-            ds_name2 = '{{ ds_name2 }}';
+        // variables
+        var bar_left_data = [{'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_70', 'pos': 'left', 'relative_imp': 1.0}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_27', 'pos': 'left', 'relative_imp': 0.406}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_67', 'pos': 'left', 'relative_imp': 0.377}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_43', 'pos': 'left', 'relative_imp': 0.369}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_79', 'pos': 'left', 'relative_imp': 0.324}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_4', 'pos': 'left', 'relative_imp': 0.263}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_16', 'pos': 'left', 'relative_imp': 0.255}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_72', 'pos': 'left', 'relative_imp': 0.224}, {'bar_mark': '0', 'bar_color': '#bababa', 'feat_name': 'feat_75', 'pos': 'left', 'relative_imp': 0.152}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_61', 'pos': 'left', 'relative_imp': 0.152}, {'bar_mark': '0', 'bar_color': '#bababa', 'feat_name': 'feat_77', 'pos': 'left', 'relative_imp': 0.141}, {'bar_mark': '0', 'bar_color': '#bababa', 'feat_name': 'feat_12', 'pos': 'left', 'relative_imp': 0.137}, {'bar_mark': '0', 'bar_color': '#bababa', 'feat_name': 'feat_49', 'pos': 'left', 'relative_imp': 0.128}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_29', 'pos': 'left', 'relative_imp': 0.126}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_41', 'pos': 'left', 'relative_imp': 0.122}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_48', 'pos': 'left', 'relative_imp': 0.118}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_3', 'pos': 'left', 'relative_imp': 0.113}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_45', 'pos': 'left', 'relative_imp': 0.107}, {'bar_mark': '0', 'bar_color': '#bababa', 'feat_name': 'feat_47', 'pos': 'left', 'relative_imp': 0.106}, {'bar_mark': '0', 'bar_color': '#bababa', 'feat_name': 'feat_17', 'pos': 'left', 'relative_imp': 0.105}],
+            bar_right_data = [{'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_72', 'pos': 'right', 'relative_imp': 1.0}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_70', 'pos': 'right', 'relative_imp': 0.852}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_67', 'pos': 'right', 'relative_imp': 0.717}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_16', 'pos': 'right', 'relative_imp': 0.694}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_79', 'pos': 'right', 'relative_imp': 0.609}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_4', 'pos': 'right', 'relative_imp': 0.537}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_43', 'pos': 'right', 'relative_imp': 0.429}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_61', 'pos': 'right', 'relative_imp': 0.344}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_3', 'pos': 'right', 'relative_imp': 0.231}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_41', 'pos': 'right', 'relative_imp': 0.197}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_48', 'pos': 'right', 'relative_imp': 0.187}, {'bar_mark': '1', 'bar_color': '#abdda4', 'feat_name': 'feat_45', 'pos': 'right', 'relative_imp': 0.185}, {'bar_mark': '0', 'bar_color': '#9ac6df', 'feat_name': 'feat_71', 'pos': 'right', 'relative_imp': 0.185}, {'bar_mark': '0', 'bar_color': '#9ac6df', 'feat_name': 'feat_62', 'pos': 'right', 'relative_imp': 0.181}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_29', 'pos': 'right', 'relative_imp': 0.17}, {'bar_mark': '0', 'bar_color': '#9ac6df', 'feat_name': 'feat_60', 'pos': 'right', 'relative_imp': 0.168}, {'bar_mark': '0', 'bar_color': '#9ac6df', 'feat_name': 'feat_21', 'pos': 'right', 'relative_imp': 0.145}, {'bar_mark': '1', 'bar_color': '#f17182', 'feat_name': 'feat_27', 'pos': 'right', 'relative_imp': 0.137}, {'bar_mark': '0', 'bar_color': '#9ac6df', 'feat_name': 'feat_11', 'pos': 'right', 'relative_imp': 0.136}, {'bar_mark': '0', 'bar_color': '#9ac6df', 'feat_name': 'feat_46', 'pos': 'right', 'relative_imp': 0.133}],
+            line_data = [{'bar_color': '#f17182', 'feat_name': 'feat_70'}, {'bar_color': '#f17182', 'feat_name': 'feat_27'}, {'bar_color': '#abdda4', 'feat_name': 'feat_67'}, {'bar_color': '#f17182', 'feat_name': 'feat_43'}, {'bar_color': '#abdda4', 'feat_name': 'feat_79'}, {'bar_color': '#abdda4', 'feat_name': 'feat_4'}, {'bar_color': '#abdda4', 'feat_name': 'feat_16'}, {'bar_color': '#abdda4', 'feat_name': 'feat_72'}, {'bar_color': '#abdda4', 'feat_name': 'feat_61'}, {'bar_color': '#f17182', 'feat_name': 'feat_29'}, {'bar_color': '#abdda4', 'feat_name': 'feat_41'}, {'bar_color': '#abdda4', 'feat_name': 'feat_48'}, {'bar_color': '#abdda4', 'feat_name': 'feat_3'}, {'bar_color': '#abdda4', 'feat_name': 'feat_45'}], 
+            legend_data = [{'color': '#f17182', 'name': 'Drop'}, {'color': '#abdda4', 'name': 'Up & Stable'}, {'color': '#bababa', 'name': 'Disappear'}, {'color': '#9ac6df', 'name': 'Appear'}],
+            max_bar_width = 300,
+            bar_height = 30,
+            middle_gap = 300,
+            fontsize = 12, 
+            ds_name1 = 'training set', 
+            ds_name2 = 'test set';
 
         var width = max_bar_width * 2 + middle_gap,
             height = bar_left_data.length * bar_height;
 
+        // bars
         var svg = d3.select("#graphic").append("svg")
             .attr("width", width + 10)
-            .attr("height", height)
+            .attr("height", height + 10)
             .append("g");
 
+        // scaler for bar width
         var x = d3.scale.linear()
             .range([0, max_bar_width])
             .domain([0, 1.0]);
 
+        // scaler for bar height
         var y_left = d3.scale.ordinal()
                 .rangeRoundBands([0, height], .1)
                 .domain(bar_left_data.map(function (d) {
@@ -59,8 +60,10 @@
                     return d.feat_name;
                 }));
 
+        // adjust for titles
         var title_adjust = bar_height - y_left(bar_left_data[0].feat_name);
 
+        // draw legends
         var legend_height = bar_height / 1.5,
             legend_gap = 3,
             legend_text_offset_x = 5,
@@ -113,6 +116,7 @@
             .style('font-size', fontsize + 'px')
             .style('font-weight', 'bold');
 
+        // draw bars and lines
         updateBar('left', bar_left_data);
         updateBar('right', bar_right_data);
         updateLines();
@@ -135,14 +139,16 @@
                 title = ds_name2;
             }
 
+            // append title
             svg.append("g").append('text')
                 .text(title)
                 .attr('y', bar_height / 1.5)
                 .attr('x', bar_x + 5)
                 .style('fill', '#000')
                 .style('font-weight', 'bold')
-                .style('font-size', fontsize + 1 + 'px');
+                .style('font-size', fontsize + 2 + 'px');
             
+            // draw gray bars as background
             var bg_bars = svg.selectAll("." + bg_bar_class)
                 .data(bar_data)
                 .enter()
@@ -160,6 +166,7 @@
                 .on("mouseover", barHover)
                 .on("mouseout", barOut);
 
+            // draw bars
             var bars = svg.selectAll("." + bar_class)
                 .data(bar_data)
                 .enter()
@@ -181,6 +188,7 @@
                 .on("mouseover", barHover)
                 .on("mouseout", barOut);
 
+            // append feature names
             bars.append("text")
                 .attr("class", "label")
                 .attr("y", function (d) {
@@ -190,7 +198,7 @@
                 .text(function (d) {
                     return d.feat_name;
                 })
-                .style('fill', function(d) { return d.font_color;})
+                .style('fill', function(d) { return '#000';})
                 .style('font-size', fontsize + 'px');
         }
 
@@ -218,7 +226,7 @@
 
         }
 
-
+        // mouseover handler
         function barHover(d) {
             d3.selectAll('.bg_bar_' + d.pos).filter(function(o) {
                 return o.feat_name == d.feat_name;
@@ -243,7 +251,7 @@
             }
         }
 
-
+        // mouseout handler
         function barOut(d) {
 
             d3.selectAll('.bg_bar_' + d.pos).filter(function(o) {

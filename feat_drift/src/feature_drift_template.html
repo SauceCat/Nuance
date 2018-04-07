@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            margin: 60px 50px 50px 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Feature Drift</h1>
+        <p>Visualize how important features drift through two datasets.</p>
+    </div>
+    <div id="legend"></div> 
+    <div id="graphic"></div>
+
+    <script>
+        // variables
+        var bar_left_data = {{ bar_left_data|safe }},
+            bar_right_data = {{ bar_right_data|safe }},
+            line_data = {{ line_data|safe }}, 
+            legend_data = {{ legend_data|safe }},
+            max_bar_width = {{ max_bar_width }},
+            bar_height = {{ bar_height }},
+            middle_gap = {{ middle_gap }},
+            fontsize = {{ fontsize }}, 
+            ds_name1 = '{{ ds_name1 }}', 
+            ds_name2 = '{{ ds_name2 }}';
+
+        var width = max_bar_width * 2 + middle_gap,
+            height = bar_left_data.length * bar_height;
+
+        // bars
+        var svg = d3.select("#graphic").append("svg")
+            .attr("width", width + 10)
+            .attr("height", height + 10)
+            .append("g");
+
+        // scaler for bar width
+        var x = d3.scale.linear()
+            .range([0, max_bar_width])
+            .domain([0, 1.0]);
+
+        // scaler for bar height
+        var y_left = d3.scale.ordinal()
+                .rangeRoundBands([0, height], .1)
+                .domain(bar_left_data.map(function (d) {
+                    return d.feat_name;
+                }));
+
+        var y_right = d3.scale.ordinal()
+                .rangeRoundBands([0, height], .1)
+                .domain(bar_right_data.map(function (d) {
+                    return d.feat_name;
+                }));
+
+        // adjust for titles
+        var title_adjust = bar_height - y_left(bar_left_data[0].feat_name);
+
+        // draw legends
+        var legend_height = bar_height / 1.5,
+            legend_gap = 3,
+            legend_text_offset_x = 5,
+            legend_text_offset_y = 4,
+            legend_margin_bottom = bar_height;
+
+        var legend = d3.select('#legend').append('svg')
+            .attr("width", width + 10)
+            .attr("height", legend_height * 2 + legend_gap + legend_margin_bottom)
+            .append("g");
+
+        var legend_bars = legend.selectAll('.legend_bar')
+            .data(legend_data)
+            .enter()
+            .append("g")
+
+        legend_bars.append("rect")
+            .attr("class", 'legend_bar')
+            .attr("y", function (d, i) {
+                if (i >= 2) {
+                    return legend_height + legend_gap;
+                }else{
+                    return 0;
+                }
+            })
+            .attr("height", legend_height)
+            .attr("x", function(d, i) {
+                return (max_bar_width / 2.) * (i % 2);
+            })
+            .attr("width", legend_height)
+            .style("fill", function(d) {
+                return d.color;
+            });
+
+        legend_bars.append("text")
+            .attr("class", "legend_label")
+            .attr("y", function (d, i) {
+                if (i >= 2) {
+                    return 1.5 * legend_height + legend_gap + legend_text_offset_y;
+                }else{
+                    return 0.5 * legend_height + 4;
+                }
+            })
+            .attr("x", function(d, i) {
+                return (max_bar_width / 2.) * (i % 2) + legend_height + legend_text_offset_x;
+            })
+            .text(function (d) {
+                return d.name;
+            })
+            .style('font-size', fontsize + 'px')
+            .style('font-weight', 'bold');
+
+        // draw bars and lines
+        updateBar('left', bar_left_data);
+        updateBar('right', bar_right_data);
+        updateLines();
+
+        function updateBar(pos, bar_data) {
+
+            var bar_x = 0,
+                bg_bar_class = 'bg_bar_left',
+                bar_class = 'bar_left',
+                y = y_left, 
+                other_pos = 'right', 
+                title = ds_name1;
+
+            if (pos == 'right') {
+                bar_x = max_bar_width + middle_gap;
+                bg_bar_class = 'bg_bar_right';
+                bar_class = 'bar_right';
+                y = y_right;
+                other_pos = 'left', 
+                title = ds_name2;
+            }
+
+            // append title
+            svg.append("g").append('text')
+                .text(title)
+                .attr('y', bar_height / 1.5)
+                .attr('x', bar_x + 5)
+                .style('fill', '#000')
+                .style('font-weight', 'bold')
+                .style('font-size', fontsize + 2 + 'px');
+            
+            // draw gray bars as background
+            var bg_bars = svg.selectAll("." + bg_bar_class)
+                .data(bar_data)
+                .enter()
+                .append("g")
+
+            bg_bars.append("rect")
+                .attr("class", bg_bar_class)
+                .attr("y", function (d) {
+                    return y(d.feat_name) + title_adjust;
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", bar_x)
+                .attr("width", max_bar_width)
+                .style("fill", '#f0f0f0')
+                .on("mouseover", barHover)
+                .on("mouseout", barOut);
+
+            // draw bars
+            var bars = svg.selectAll("." + bar_class)
+                .data(bar_data)
+                .enter()
+                .append("g");
+
+            bars.append("rect")
+                .attr("class", bar_class)
+                .attr("y", function (d) {
+                    return y(d.feat_name) + title_adjust;
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", bar_x)
+                .attr("width", function (d) {
+                    return x(d.relative_imp);
+                })
+                .style('fill', function (d){
+                    return d.bar_color;
+                })                
+                .on("mouseover", barHover)
+                .on("mouseout", barOut);
+
+            // append feature names
+            bars.append("text")
+                .attr("class", "label")
+                .attr("y", function (d) {
+                    return y(d.feat_name) + y.rangeBand() / 1.5 + title_adjust;
+                })
+                .attr("x", bar_x+5)
+                .text(function (d) {
+                    return d.feat_name;
+                })
+                .style('fill', function(d) { return '#000';})
+                .style('font-size', fontsize + 'px');
+        }
+
+
+        function updateLines() {
+
+            var lines = svg.selectAll(".lines")
+                .data(line_data)
+                .enter()
+                .append("g");
+
+            lines.append("line")
+                .attr("class", "lines")
+                .attr('x1', max_bar_width)
+                .attr('y1', function (d) {
+                    return y_left(d.feat_name) + y_left.rangeBand() / 2 + title_adjust;
+                })
+                .attr('x2', max_bar_width + middle_gap)
+                .attr('y2', function (d) {
+                    return y_right(d.feat_name) + y_right.rangeBand() / 2 + title_adjust;
+                })
+                .style('stroke', function (d) {
+                    return d.bar_color;
+                });
+
+        }
+
+        // mouseover handler
+        function barHover(d) {
+            d3.selectAll('.bg_bar_' + d.pos).filter(function(o) {
+                return o.feat_name == d.feat_name;
+            })
+            .style("stroke", d.bar_color)
+            .style("stroke-width", 2);
+
+            var other_pos = 'right';
+            if (d.pos == 'right') other_pos = 'left';
+
+            if (d.bar_mark == '1') {
+                d3.selectAll('.bg_bar_' + other_pos).filter(function(o) {
+                    return o.feat_name == d.feat_name;
+                })
+                .style("stroke", d.bar_color)
+                .style("stroke-width", 2);
+
+                d3.selectAll('.lines').filter(function(l) {
+                    return l.feat_name == d.feat_name;
+                })
+                .style("stroke-width", 4);
+            }
+        }
+
+        // mouseout handler
+        function barOut(d) {
+
+            d3.selectAll('.bg_bar_' + d.pos).filter(function(o) {
+                return o.feat_name == d.feat_name;
+            })
+            .style("stroke", null);
+
+            var other_pos = 'right';
+            if (d.pos == 'right') other_pos = 'left';
+
+            if (d.bar_mark == '1') {
+                d3.selectAll('.bg_bar_' + other_pos).filter(function(o) {
+                    return o.feat_name == d.feat_name;
+                })
+                .style("stroke", null);
+
+                d3.selectAll('.lines').filter(function(l) {
+                    return l.feat_name == d.feat_name;
+                })
+                .style("stroke-width", 1);
+            }
+        }
+
+    </script>
+</body>
+</html>
