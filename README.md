@@ -27,3 +27,7 @@ Please check instructions in the corresponding folder
         <td><img src="https://github.com/SauceCat/Nuance/blob/master/sankey/images/sankey_flow_col_val.PNG" /></td>
     </tr>
     </table>
+    <br>
+4. **feature drift**: [visualize feature drift](https://github.com/SauceCat/Nuance/tree/master/feat_drift)  
+    <br>
+    <img src="https://github.com/SauceCat/Nuance/blob/master/feat_drift/images/feat_drift.gif" />  
