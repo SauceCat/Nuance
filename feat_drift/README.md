@@ -1,6 +1,13 @@
 ## Visualize feature drift
 <img src="https://github.com/SauceCat/Nuance/blob/master/feat_drift/images/feat_drift.gif"/>       
 
+## What's feature drift
+**"Feature drifts occur whenever the relevance of a feature grows or shrinks for incoming instances."**  
+Check this paper: [A survey on feature drift adaptation: Definition, benchmark, challenges and future directions](https://www.sciencedirect.com/science/article/pii/S0164121216301030)  
+  
+**Make it simple:** If your training dataset is relevant to time, the subset of important features selected by the same model might be quite different through time.  
+The idea is to try to visualize the "feature drift" between two different training sets. Usually these two datasets are from different snapshots. So this visualization could help detect "feature drift" through time. The expected inputs are two dataframes, containing feature importance information. You can check [this notebook](https://github.com/SauceCat/Nuance/blob/master/feat_drift/feat_drift_test.ipynb) for more details.  
+
 ## How to use?
 1. Download the folder [**feat_drift**](https://github.com/SauceCat/Nuance/tree/master/feat_drift)
 2. The folder structure:
@@ -26,7 +33,7 @@
                                            ds_name1='training set', ds_name2='test set', graph_name='train_test',
                                            top_n=20, max_bar_width=300, bar_height=30, middle_gap=300, fontsize=12, color_dict=None)
     ```
-5. A html file would be generated in [feature_drift_output](https://github.com/SauceCat/Nuance/tree/master/feat_drift/feature_drift_output) or [sankey_tree_output](https://github.com/SauceCat/Nuance/tree/master/tree/sankey_tree_output) folder. Open it using any browser you like (I like Chrome anyway). 
+5. A html file would be generated in [feature_drift_output](https://github.com/SauceCat/Nuance/tree/master/feat_drift/feature_drift_output). Open it using any browser you like (I like Chrome anyway). 
 
 ## Parameters
 ```python
